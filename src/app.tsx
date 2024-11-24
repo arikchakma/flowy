@@ -1,13 +1,10 @@
 import {
   Background,
   BackgroundVariant,
-  Controls,
-  MiniMap,
   ReactFlow,
   addEdge,
   useEdgesState,
   useNodesState,
-  useReactFlow,
 } from '@xyflow/react';
 import type { Edge, Node, OnConnect } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -61,7 +58,7 @@ const initialNodes: Node[] = [
   {
     id: '6',
     type: 'log',
-    position: { x: 500, y: 240 },
+    position: { x: 450, y: 240 },
     data: { label: '5' },
   },
 ];

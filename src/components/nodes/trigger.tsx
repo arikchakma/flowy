@@ -5,9 +5,9 @@ import { memo } from 'react';
 function _TriggerNode() {
   return (
     <>
-      <div className="flex items-center gap-1.5 rounded-full bg-zinc-900 p-2 px-2.5 pr-4 text-white shadow-md">
+      <div className="flex items-center gap-1.5 rounded-full bg-zinc-900 p-2 px-2.5 pr-4 text-white inset-ring-1 shadow-sm inset-ring-zinc-200/20">
         <TargetIcon className="size-3.5 stroke-[2.5]" />
-        <span className="leading-none font-medium">Trigger</span>
+        <span className="text-sm leading-none font-medium">Trigger</span>
       </div>
 
       <Handle
