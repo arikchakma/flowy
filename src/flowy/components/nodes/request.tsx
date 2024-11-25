@@ -2,8 +2,9 @@ import { Handle, Node, NodeProps, Position } from '@xyflow/react';
 import { Parentheses, PencilIcon, WifiIcon } from 'lucide-react';
 import { memo } from 'react';
 import { cn } from '../../utils/classname';
+import { HandleId } from '../../utils/contants';
 
-type RequestNode = Node<{}>;
+export type RequestNode = Node<{}, 'request'>;
 
 function _RequestNode(props: NodeProps<RequestNode>) {
   const { selected } = props;
@@ -62,20 +63,20 @@ function _RequestNode(props: NodeProps<RequestNode>) {
       </div>
 
       <Handle
-        id="w1"
+        id={HandleId.RequestTarget}
         type="target"
         position={Position.Left}
         className="top-full! -z-10! size-2.5! -translate-y-9.5! border-none! bg-pink-700!"
       />
 
       <Handle
-        id="w2"
+        id={HandleId.RequestSuccessSource}
         type="source"
         position={Position.Right}
         className="top-full! -z-10! size-2.5! -translate-y-9.5! border-none! bg-pink-700!"
       />
       <Handle
-        id="x2"
+        id={HandleId.RequestFailureSource}
         type="source"
         position={Position.Right}
         className="top-full! -z-10! size-2.5! -translate-y-4.5! border-none! bg-pink-700!"
