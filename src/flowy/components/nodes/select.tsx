@@ -1,13 +1,63 @@
-import { Handle, Node, NodeProps, Position } from '@xyflow/react';
+import {
+  Handle,
+  Node,
+  NodeProps,
+  Position,
+  useHandleConnections,
+} from '@xyflow/react';
 import { LinkIcon } from 'lucide-react';
-import { memo } from 'react';
-import { HandleId } from '../../utils/contants';
+import { memo, useEffect, useState } from 'react';
+import { HandleId } from '../../types';
 import { cn } from '../../utils/classname';
+import { RunningStep, useFlowyStore } from '../../stores/flowy-store';
+import { getProperty } from 'dot-prop';
 
 export type SelectNode = Node<{}, 'select'>;
 
 function _SelectNode(props: NodeProps<SelectNode>) {
-  const { selected } = props;
+  const { status, getStep, removeStep, addStep, steps, updateStep } =
+    useFlowyStore();
+
+  const { selected, id: nodeId } = props;
+  const [selectPath, setSelectPath] = useState('');
+
+  const parentNodes = useHandleConnections({
+    type: 'target',
+    id: HandleId.SelectTarget,
+    nodeId,
+  });
+
+  const leafNodes = useHandleConnections({
+    type: 'source',
+    id: HandleId.SelectSource,
+    nodeId,
+  });
+
+  useEffect(() => {
+    if (status !== 'running') {
+      return;
+    }
+
+    for (const parentNode of parentNodes) {
+      const step = getStep(nodeId, parentNode.source);
+      if (!step || step.status !== 'idle') {
+        continue;
+      }
+
+      updateStep(nodeId, parentNode.source, { status: 'running' });
+
+      const value = getProperty(step, selectPath);
+      const steps: RunningStep[] = leafNodes.map((connection) => ({
+        status: 'idle',
+        nodeId: connection.target,
+        parentId: nodeId,
+        data: value,
+      }));
+
+      addStep(steps);
+      removeStep(nodeId, parentNode.source);
+    }
+  }, [status, parentNodes, leafNodes, selectPath, steps]);
 
   return (
     <>
@@ -23,7 +73,9 @@ function _SelectNode(props: NodeProps<SelectNode>) {
         </div>
         <input
           placeholder="Enter path"
-          className="w-28 px-2 py-1 font-mono text-sm placeholder:font-sans placeholder:text-zinc-400 focus:outline-none"
+          className="w-30 px-2 py-1 font-mono text-sm placeholder:font-sans placeholder:text-zinc-400 focus:outline-none"
+          value={selectPath}
+          onChange={(e) => setSelectPath(e.target.value)}
         />
       </div>
 

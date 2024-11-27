@@ -1,17 +1,9 @@
 import { Edge } from '@xyflow/react';
-import { AppNode } from '../types';
+import { AppNode, HandleId } from '../types';
 
-export enum HandleId {
-  TriggerSource = 'TRIGGER_SOURCE',
-  LogTarget = 'LOG_TARGET',
-
-  RequestSuccessSource = 'REQUEST_SUCCESS_SOURCE',
-  RequestFailureSource = 'REQUEST_FAILURE_SOURCE',
-  RequestTarget = 'REQUEST_TARGET',
-
-  SelectSource = 'SELECT_SOURCE',
-  SelectTarget = 'SELECT_TARGET',
-}
+export const REQUEST_STROKE_STYLE = {
+  stroke: 'var(--color-pink-700)',
+};
 
 export const initialNodes: AppNode[] = [
   {
@@ -66,6 +58,10 @@ export const initialEdges: Edge[] = [
     target: '5',
     sourceHandle: HandleId.RequestSuccessSource,
     targetHandle: HandleId.LogTarget,
+    style: {
+      stroke: 'var(--color-pink-700)',
+      strokeWidth: 2.5,
+    },
   },
   {
     id: '4-6',
@@ -73,6 +69,10 @@ export const initialEdges: Edge[] = [
     target: '6',
     sourceHandle: HandleId.RequestFailureSource,
     targetHandle: HandleId.LogTarget,
+    style: {
+      stroke: 'var(--color-pink-700)',
+      strokeWidth: 2.5,
+    },
   },
   {
     id: '4-7',
@@ -80,6 +80,10 @@ export const initialEdges: Edge[] = [
     target: '7',
     sourceHandle: HandleId.RequestSuccessSource,
     targetHandle: HandleId.SelectTarget,
+    style: {
+      stroke: 'var(--color-pink-700)',
+      strokeWidth: 2.5,
+    },
   },
   {
     id: '7-8',

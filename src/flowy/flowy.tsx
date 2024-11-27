@@ -1,12 +1,18 @@
 import '@xyflow/react/dist/style.css';
-import { Background, BackgroundVariant, ReactFlow } from '@xyflow/react';
+import {
+  Background,
+  BackgroundVariant,
+  ReactFlow,
+  ReactFlowProvider,
+} from '@xyflow/react';
 
 import { TriggerNode } from './components/nodes/trigger';
 import { RequestNode } from './components/nodes/request';
 import { LogNode } from './components/nodes/log';
 import { BubbleMenu } from './components/bubble-menu';
-import { useFlowyStore } from './stores/flowy-store';
+import { useEditorStore } from './stores/editor-store';
 import { SelectNode } from './components/nodes/select';
+import { ViewportLogger } from './components/loggers/viewport-logger';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -30,9 +36,9 @@ const defaultEdgeOptions = {
   },
 };
 
-export function Flowy() {
+function _Flowy() {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect } =
-    useFlowyStore((state) => ({
+    useEditorStore((state) => ({
       nodes: state.nodes,
       edges: state.edges,
       onNodesChange: state.onNodesChange,
@@ -63,7 +69,16 @@ export function Flowy() {
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
         <BubbleMenu />
+        <ViewportLogger />
       </ReactFlow>
     </div>
+  );
+}
+
+export function Flowy() {
+  return (
+    <ReactFlowProvider>
+      <_Flowy />
+    </ReactFlowProvider>
   );
 }

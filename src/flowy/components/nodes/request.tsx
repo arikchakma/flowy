@@ -1,13 +1,82 @@
-import { Handle, Node, NodeProps, Position } from '@xyflow/react';
+import {
+  Handle,
+  Node,
+  NodeProps,
+  Position,
+  useHandleConnections,
+} from '@xyflow/react';
 import { Parentheses, PencilIcon, WifiIcon } from 'lucide-react';
-import { memo } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { cn } from '../../utils/classname';
-import { HandleId } from '../../utils/contants';
+import { HandleId } from '../../types';
+import { RunningStep, useFlowyStore } from '../../stores/flowy-store';
 
 export type RequestNode = Node<{}, 'request'>;
 
 function _RequestNode(props: NodeProps<RequestNode>) {
-  const { selected } = props;
+  const { status, getStep, removeStep, addStep, steps, updateStep } =
+    useFlowyStore();
+
+  const { selected, id: nodeId } = props;
+
+  const parentNodes = useHandleConnections({
+    type: 'target',
+    id: HandleId.RequestTarget,
+    nodeId,
+  });
+  const successLeafNodes = useHandleConnections({
+    type: 'source',
+    id: HandleId.RequestSuccessSource,
+    nodeId,
+  });
+  const failureLeafNodes = useHandleConnections({
+    type: 'source',
+    id: HandleId.RequestFailureSource,
+    nodeId,
+  });
+
+  const handleRequest = useCallback(async () => {
+    for (const parentNode of parentNodes) {
+      const step = getStep(nodeId, parentNode.source);
+      if (!step || step.status !== 'idle') {
+        continue;
+      }
+
+      // DO SOME MAGIC
+
+      updateStep(nodeId, parentNode.source, { status: 'running' });
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const result = Math.random() > 0.5 ? 'success' : 'failure';
+
+      const steps: RunningStep[] = (
+        result === 'success' ? successLeafNodes : failureLeafNodes
+      ).map((connection) => ({
+        status: 'idle',
+        nodeId: connection.target,
+        parentId: nodeId,
+
+        ...(result === 'success'
+          ? { data: { success: true }, error: undefined }
+          : {
+              data: undefined,
+              error: {
+                message: 'Failed to send request',
+              },
+            }),
+      }));
+
+      addStep(steps);
+      removeStep(nodeId, parentNode.source);
+    }
+  }, [parentNodes, successLeafNodes, failureLeafNodes, steps]);
+
+  useEffect(() => {
+    if (status !== 'running') {
+      return;
+    }
+
+    handleRequest();
+  }, [status, steps]);
 
   return (
     <>

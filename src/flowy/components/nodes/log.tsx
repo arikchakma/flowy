@@ -1,13 +1,51 @@
-import { Handle, Node, NodeProps, Position } from '@xyflow/react';
+import {
+  Handle,
+  Node,
+  NodeProps,
+  Position,
+  useHandleConnections,
+  useNodesData,
+} from '@xyflow/react';
 import { Parentheses } from 'lucide-react';
-import { memo } from 'react';
-import { HandleId } from '../../utils/contants';
+import { memo, useCallback, useEffect } from 'react';
+import { HandleId } from '../../types';
 import { cn } from '../../utils/classname';
+import { useFlowyStore } from '../../stores/flowy-store';
 
 export type LogNode = Node<{}, 'log'>;
 
 function _LogNode(props: NodeProps<LogNode>) {
-  const { selected } = props;
+  const { status, getStep, removeStep, steps, updateStep } = useFlowyStore();
+
+  const { selected, id: nodeId } = props;
+
+  const parentNodes = useHandleConnections({
+    type: 'target',
+    id: HandleId.LogTarget,
+    nodeId,
+  });
+
+  const handleLog = useCallback(async () => {
+    for (const parentNode of parentNodes) {
+      const step = getStep(nodeId, parentNode.source);
+      if (!step || step.status !== 'idle') {
+        continue;
+      }
+
+      updateStep(nodeId, parentNode.source, { status: 'running' });
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log('LOGGING STEP', step);
+      removeStep(nodeId, parentNode.source);
+    }
+  }, [parentNodes, steps]);
+
+  useEffect(() => {
+    if (status !== 'running') {
+      return;
+    }
+
+    handleLog();
+  }, [status, steps]);
 
   return (
     <>
