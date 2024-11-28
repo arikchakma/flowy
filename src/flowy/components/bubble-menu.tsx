@@ -1,13 +1,9 @@
 import { Panel, useReactFlow } from '@xyflow/react';
 import { MaximizeIcon, PlayIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
-import { RunningStep, useFlowyStore } from '../stores/flowy-store';
+import { useFlowyStore } from '../stores/flowy-store';
 
 export function BubbleMenu() {
-  const { status, start, addStep } = useFlowyStore((s) => ({
-    status: s.status,
-    start: s.start,
-    addStep: s.addStep,
-  }));
+  const { status, start } = useFlowyStore();
   const { zoomIn, zoomOut, fitView, getNodes } = useReactFlow();
 
   return (
@@ -35,14 +31,7 @@ export function BubbleMenu() {
         <button
           className="flex min-h-8 cursor-pointer items-center gap-1 rounded-lg bg-zinc-900 px-2 py-1.5 leading-none text-white hover:bg-zinc-800"
           onClick={() => {
-            const nodes: RunningStep[] = getNodes()
-              .filter((node) => node.type === 'trigger')
-              .map((node) => ({
-                status: 'idle',
-                nodeId: node.id,
-              }));
             start();
-            addStep(nodes);
           }}
         >
           <PlayIcon className="size-3.5 shrink-0 fill-current stroke-[2.5]" />

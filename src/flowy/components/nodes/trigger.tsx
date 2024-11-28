@@ -9,37 +9,14 @@ import { TargetIcon } from 'lucide-react';
 import { memo, useEffect } from 'react';
 import { HandleId } from '../../types';
 import { cn } from '../../utils/classname';
-import { RunningStep, useFlowyStore } from '../../stores/flowy-store';
+import { useFlowyStore } from '../../stores/flowy-store';
 
 export type TriggerNode = Node<{}, 'trigger'>;
 
 function _TriggerNode(props: NodeProps<TriggerNode>) {
-  const { status, getStep, removeStep, addStep, updateStep } = useFlowyStore();
+  const { status } = useFlowyStore();
 
   const { selected, id: nodeId } = props;
-
-  const leafNodes = useHandleConnections({
-    type: 'source',
-    id: HandleId.TriggerSource,
-    nodeId,
-  });
-
-  useEffect(() => {
-    const step = getStep(nodeId);
-    if (status !== 'running' || !step || step.status !== 'idle') {
-      return;
-    }
-
-    updateStep(nodeId, undefined, { status: 'running' });
-    const steps: RunningStep[] = leafNodes.map((connection) => ({
-      status: 'idle',
-      nodeId: connection.target,
-      parentId: nodeId,
-    }));
-
-    addStep(steps);
-    removeStep(nodeId);
-  }, [status, leafNodes]);
 
   return (
     <>

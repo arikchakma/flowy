@@ -9,74 +9,15 @@ import { Parentheses, PencilIcon, WifiIcon } from 'lucide-react';
 import { memo, useCallback, useEffect } from 'react';
 import { cn } from '../../utils/classname';
 import { HandleId } from '../../types';
-import { RunningStep, useFlowyStore } from '../../stores/flowy-store';
+import { useFlowyStore } from '../../stores/flowy-store';
 
 export type RequestNode = Node<{}, 'request'>;
 
 function _RequestNode(props: NodeProps<RequestNode>) {
-  const { status, getStep, removeStep, addStep, steps, updateStep } =
-    useFlowyStore();
-
+  const { results } = useFlowyStore();
   const { selected, id: nodeId } = props;
 
-  const parentNodes = useHandleConnections({
-    type: 'target',
-    id: HandleId.RequestTarget,
-    nodeId,
-  });
-  const successLeafNodes = useHandleConnections({
-    type: 'source',
-    id: HandleId.RequestSuccessSource,
-    nodeId,
-  });
-  const failureLeafNodes = useHandleConnections({
-    type: 'source',
-    id: HandleId.RequestFailureSource,
-    nodeId,
-  });
-
-  const handleRequest = useCallback(async () => {
-    for (const parentNode of parentNodes) {
-      const step = getStep(nodeId, parentNode.source);
-      if (!step || step.status !== 'idle') {
-        continue;
-      }
-
-      // DO SOME MAGIC
-
-      updateStep(nodeId, parentNode.source, { status: 'running' });
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const result = Math.random() > 0.5 ? 'success' : 'failure';
-
-      const steps: RunningStep[] = (
-        result === 'success' ? successLeafNodes : failureLeafNodes
-      ).map((connection) => ({
-        status: 'idle',
-        nodeId: connection.target,
-        parentId: nodeId,
-
-        ...(result === 'success'
-          ? { data: { success: true }, error: undefined }
-          : {
-              data: undefined,
-              error: {
-                message: 'Failed to send request',
-              },
-            }),
-      }));
-
-      addStep(steps);
-      removeStep(nodeId, parentNode.source);
-    }
-  }, [parentNodes, successLeafNodes, failureLeafNodes, steps]);
-
-  useEffect(() => {
-    if (status !== 'running') {
-      return;
-    }
-
-    handleRequest();
-  }, [status, steps]);
+  const result = results.get(nodeId);
 
   return (
     <>
@@ -84,7 +25,9 @@ function _RequestNode(props: NodeProps<RequestNode>) {
         className={cn(
           'max-w-52 min-w-52 rounded-xl bg-pink-200 p-1 inset-ring-1 inset-ring-pink-300/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-pink-300'
+          selected && 'outline-1 outline-offset-1 outline-pink-300',
+          result?.status === 'running' &&
+            'animate-running-node outline-2 outline-offset-1 outline-pink-300'
         )}
       >
         <div className="flex items-center justify-between px-1 py-2 pt-1.5">

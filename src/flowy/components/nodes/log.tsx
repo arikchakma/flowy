@@ -15,37 +15,10 @@ import { useFlowyStore } from '../../stores/flowy-store';
 export type LogNode = Node<{}, 'log'>;
 
 function _LogNode(props: NodeProps<LogNode>) {
-  const { status, getStep, removeStep, steps, updateStep } = useFlowyStore();
-
+  const { results } = useFlowyStore();
   const { selected, id: nodeId } = props;
 
-  const parentNodes = useHandleConnections({
-    type: 'target',
-    id: HandleId.LogTarget,
-    nodeId,
-  });
-
-  const handleLog = useCallback(async () => {
-    for (const parentNode of parentNodes) {
-      const step = getStep(nodeId, parentNode.source);
-      if (!step || step.status !== 'idle') {
-        continue;
-      }
-
-      updateStep(nodeId, parentNode.source, { status: 'running' });
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log('LOGGING STEP', step);
-      removeStep(nodeId, parentNode.source);
-    }
-  }, [parentNodes, steps]);
-
-  useEffect(() => {
-    if (status !== 'running') {
-      return;
-    }
-
-    handleLog();
-  }, [status, steps]);
+  const result = results.get(nodeId);
 
   return (
     <>
@@ -53,7 +26,9 @@ function _LogNode(props: NodeProps<LogNode>) {
         className={cn(
           'flex items-center gap-1.5 rounded-full bg-zinc-900 px-2.5 py-2 text-white inset-ring-1 shadow-sm inset-ring-zinc-200/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-zinc-400'
+          selected && 'outline-1 outline-offset-1 outline-zinc-400',
+          result?.status === 'running' &&
+            'animate-running-node outline-2 outline-offset-1 outline-zinc-400'
         )}
       >
         <Parentheses className="size-3.5 stroke-[2.5]" />

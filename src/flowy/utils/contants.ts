@@ -34,12 +34,24 @@ export const initialNodes: AppNode[] = [
     id: '7',
     type: 'select',
     position: { x: 450, y: 160 },
-    data: { label: '5' },
+    data: { path: 'data.success' },
   },
   {
     id: '8',
     type: 'log',
     position: { x: 660, y: 200 },
+    data: { label: '5' },
+  },
+  {
+    id: '9',
+    type: 'request',
+    position: { x: 470, y: -3 },
+    data: { label: '9' },
+  },
+  {
+    id: '10',
+    type: 'log',
+    position: { x: 770, y: 160 },
     data: { label: '5' },
   },
 ];
@@ -91,5 +103,27 @@ export const initialEdges: Edge[] = [
     target: '8',
     sourceHandle: HandleId.SelectSource,
     targetHandle: HandleId.LogTarget,
+  },
+  {
+    id: '4-9',
+    source: '4',
+    target: '9',
+    sourceHandle: HandleId.RequestSuccessSource,
+    targetHandle: HandleId.RequestTarget,
+    style: {
+      stroke: 'var(--color-pink-700)',
+      strokeWidth: 2.5,
+    },
+  },
+  {
+    id: '9-10',
+    source: '9',
+    target: '10',
+    sourceHandle: HandleId.RequestSuccessSource,
+    targetHandle: HandleId.LogTarget,
+    style: {
+      stroke: 'var(--color-pink-700)',
+      strokeWidth: 2.5,
+    },
   },
 ];
