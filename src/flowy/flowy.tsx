@@ -13,12 +13,17 @@ import { BubbleMenu } from './components/bubble-menu';
 import { useEditorStore } from './stores/editor-store';
 import { SelectNode } from './components/nodes/select';
 import { ViewportLogger } from './components/loggers/viewport-logger';
+import { LoopCountEdge } from './components/edges/loop-count';
 
 const nodeTypes = {
   trigger: TriggerNode,
   request: RequestNode,
   log: LogNode,
   select: SelectNode,
+};
+
+const edgeTypes = {
+  loopCount: LoopCountEdge,
 };
 
 const proOptions = { hideAttribution: true };
@@ -55,6 +60,7 @@ function _Flowy() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         proOptions={proOptions}
         // Zoom and pan settings
         zoomOnScroll={false}

@@ -1,5 +1,4 @@
-import { Edge } from '@xyflow/react';
-import { AppNode, HandleId } from '../types';
+import { AppEdge, AppNode, HandleId } from '../types';
 
 export const REQUEST_STROKE_STYLE = {
   stroke: 'var(--color-pink-700)',
@@ -56,7 +55,7 @@ export const initialNodes: AppNode[] = [
   },
 ];
 
-export const initialEdges: Edge[] = [
+export const initialEdges: AppEdge[] = [
   {
     id: '3-4',
     source: '3',
@@ -116,6 +115,7 @@ export const initialEdges: Edge[] = [
     },
   },
   {
+    type: 'loopCount',
     id: '9-10',
     source: '9',
     target: '10',
