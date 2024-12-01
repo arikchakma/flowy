@@ -6,7 +6,7 @@ import { getProperty } from 'dot-prop';
 import { SelectNode } from '../components/nodes/select';
 import { RequestNode } from '../components/nodes/request';
 import { LogNode } from '../components/nodes/log';
-import { runPromisesInBatchSequentially } from '../lib/promise';
+import { runPromisesInBatchSequentially } from '../utils/promise';
 
 type FlowyStatus = 'idle' | 'running' | 'paused' | 'finished';
 

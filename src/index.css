@@ -15,3 +15,17 @@
     }
   }
 }
+
+@layer utilities {
+  /* Chrome, Safari, Edge, Opera */
+  .hide-number-controls::-webkit-outer-spin-button,
+  .hide-number-controls::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  .hide-number-controls[type='number'] {
+    -moz-appearance: textfield;
+  }
+}

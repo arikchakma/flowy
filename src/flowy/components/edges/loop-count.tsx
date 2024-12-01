@@ -2,13 +2,15 @@ import {
   BaseEdge,
   Edge,
   EdgeLabelRenderer,
-  EdgeTypes,
-  getBezierPath,
   useReactFlow,
   type EdgeProps,
 } from '@xyflow/react';
 import { DefaultEdgeType, getPath } from '../../utils/path';
-import { XIcon } from 'lucide-react';
+import { ArrowUp10Icon, InfinityIcon } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { cn } from '../../utils/classname';
+
+export type LoopRepeatType = 'indefinite' | number;
 
 export type LoopCountEdge = Edge<{
   /**
@@ -24,7 +26,7 @@ export type LoopCountEdge = Edge<{
    *
    * If not provided, this defaults to `"indefinite"`.
    */
-  repeat?: number | 'indefinite';
+  repeat?: LoopRepeatType;
 }>;
 
 export function LoopCountEdge(props: EdgeProps<LoopCountEdge>) {
@@ -42,7 +44,7 @@ export function LoopCountEdge(props: EdgeProps<LoopCountEdge>) {
     data,
   } = props;
 
-  const { setEdges, updateEdgeData } = useReactFlow();
+  const { updateEdgeData } = useReactFlow();
   const [edgePath, labelX, labelY] = getPath({
     type: data?.path ?? 'bezier',
     sourceX,
@@ -53,11 +55,11 @@ export function LoopCountEdge(props: EdgeProps<LoopCountEdge>) {
     targetPosition,
   });
 
-  const onEdgeClick = () => {
-    setEdges((edges) => edges.filter((edge) => edge.id !== id));
-  };
+  const { repeat = 'indefinite' } = data ?? {};
 
-  console.log('data', data);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [repeatCount, setRepeatCount] = useState<LoopRepeatType>(repeat);
+  const isIndefinite = repeatCount === 'indefinite';
 
   return (
     <>
@@ -69,12 +71,59 @@ export function LoopCountEdge(props: EdgeProps<LoopCountEdge>) {
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
           }}
         >
-          <button
-            className="flex size-5 cursor-pointer items-center justify-center rounded-full bg-zinc-900 text-white"
-            onClick={onEdgeClick}
-          >
-            <XIcon size={16} />
-          </button>
+          <div className="flex items-center rounded-lg bg-zinc-900 p-0.5 text-white">
+            <button
+              className={cn(
+                'flex aspect-square size-5 shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400',
+                isIndefinite && 'bg-zinc-100/20 text-white'
+              )}
+              disabled={isIndefinite}
+              onClick={() => {
+                setRepeatCount('indefinite');
+                updateEdgeData(id, { repeat: 'indefinite' });
+              }}
+            >
+              <InfinityIcon className="size-3.5" />
+            </button>
+            <div className="flex shrink-0 items-stretch">
+              <button
+                className={cn(
+                  'flex aspect-square size-5 shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400',
+                  !isIndefinite &&
+                    'cursor-default rounded-r-none bg-zinc-100/20 text-white'
+                )}
+                disabled={!isIndefinite}
+                onClick={() => {
+                  setRepeatCount(1);
+                  updateEdgeData(id, { repeat: 1 });
+                  inputRef?.current?.focus();
+                }}
+              >
+                <ArrowUp10Icon className="size-3.5" />
+              </button>
+              <input
+                type="number"
+                min={1}
+                ref={inputRef}
+                className={cn(
+                  'hide-number-controls w-0 shrink-0 appearance-none rounded-r-md text-[13px] tabular-nums transition-[width] duration-150 focus-visible:outline-none',
+                  !isIndefinite && 'w-7 bg-zinc-100/20 px-1 text-white'
+                )}
+                value={isIndefinite ? '' : repeatCount}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '') {
+                    setRepeatCount('indefinite');
+                    updateEdgeData(id, { repeat: 'indefinite' });
+                    return;
+                  }
+
+                  setRepeatCount(parseInt(value, 10));
+                  updateEdgeData(id, { repeat: parseInt(value, 10) });
+                }}
+              />
+            </div>
+          </div>
         </div>
       </EdgeLabelRenderer>
     </>
