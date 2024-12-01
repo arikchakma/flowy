@@ -13,18 +13,23 @@ import { BubbleMenu } from './components/bubble-menu';
 import { useEditorStore } from './stores/editor-store';
 import { SelectNode } from './components/nodes/select';
 import { ViewportLogger } from './components/loggers/viewport-logger';
-import { LoopCountEdge } from './components/edges/loop-count';
+import { RepeatNode } from './components/nodes/repeat';
+import { StringNode } from './components/nodes/string';
+import { NumberNode } from './components/nodes/number';
+import { BooleanNode } from './components/nodes/boolean';
 
 const nodeTypes = {
   trigger: TriggerNode,
   request: RequestNode,
   log: LogNode,
   select: SelectNode,
+  repeat: RepeatNode,
+  string: StringNode,
+  number: NumberNode,
+  boolean: BooleanNode,
 };
 
-const edgeTypes = {
-  loopCount: LoopCountEdge,
-};
+const edgeTypes = {};
 
 const proOptions = { hideAttribution: true };
 

@@ -2,11 +2,20 @@ import type { LogNode } from './components/nodes/log';
 import type { RequestNode } from './components/nodes/request';
 import type { TriggerNode } from './components/nodes/trigger';
 import { SelectNode } from './components/nodes/select';
-import { LoopCountEdge } from './components/edges/loop-count';
-import { Edge } from '@xyflow/react';
+import { RepeatNode } from './components/nodes/repeat';
+import { StringNode } from './components/nodes/string';
+import { NumberNode } from './components/nodes/number';
+import { BooleanNode } from './components/nodes/boolean';
 
-export type AppNode = RequestNode | LogNode | TriggerNode | SelectNode;
-export type AppEdge = LoopCountEdge;
+export type AppNode =
+  | RequestNode
+  | LogNode
+  | TriggerNode
+  | SelectNode
+  | RepeatNode
+  | StringNode
+  | NumberNode
+  | BooleanNode;
 
 export enum HandleId {
   TriggerSource = 'TRIGGER_SOURCE',
@@ -18,4 +27,11 @@ export enum HandleId {
 
   SelectSource = 'SELECT_SOURCE',
   SelectTarget = 'SELECT_TARGET',
+
+  RepeatSource = 'REPEAT_SOURCE',
+  RepeatTarget = 'REPEAT_TARGET',
+
+  StringSource = 'STRING_SOURCE',
+
+  NumberSource = 'NUMBER_SOURCE',
 }

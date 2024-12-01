@@ -74,7 +74,6 @@ export const useFlowyStore = createWithEqualityFn<FlowyState>(
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const nodes = useEditorStore.getState().nodes;
-      console.log(nodes);
 
       const triggerNode = nodes.find((node) => node.type === 'trigger');
       if (!triggerNode) {
@@ -104,6 +103,7 @@ export const useFlowyStore = createWithEqualityFn<FlowyState>(
           await get().handleSelectNode(node);
           break;
         default:
+          console.error(`Unhandled node type: ${node.type}`);
           break;
       }
     },

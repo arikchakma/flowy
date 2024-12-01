@@ -1,4 +1,5 @@
-import { AppEdge, AppNode, HandleId } from '../types';
+import { Edge } from '@xyflow/react';
+import { AppNode, HandleId } from '../types';
 
 export const REQUEST_STROKE_STYLE = {
   stroke: 'var(--color-pink-700)',
@@ -8,54 +9,129 @@ export const initialNodes: AppNode[] = [
   {
     id: '3',
     type: 'trigger',
-    position: { x: 0, y: 200 },
-    data: { label: '3' },
+    position: {
+      x: 0,
+      y: 200,
+    },
+    data: {
+      label: '3',
+    },
   },
   {
     id: '4',
     type: 'request',
-    position: { x: 190, y: 109 },
-    data: { label: '4' },
+    position: {
+      x: 158.5748033904688,
+      y: 109,
+    },
+    data: {
+      label: '4',
+    },
   },
   {
     id: '5',
     type: 'log',
-    position: { x: 510, y: 200 },
-    data: { label: '5' },
+    position: {
+      x: 467.93950326627834,
+      y: 198.72277354470052,
+    },
+    data: {
+      label: '5',
+    },
   },
   {
     id: '6',
     type: 'log',
-    position: { x: 550, y: 240 },
-    data: { label: '5' },
+    position: {
+      x: 493.12839178319683,
+      y: 236.2100694822811,
+    },
+    data: {
+      label: '5',
+    },
   },
   {
     id: '7',
     type: 'select',
-    position: { x: 450, y: 160 },
-    data: { path: 'data.success' },
+    position: {
+      x: 444.28632788917616,
+      y: 163.57104506926493,
+    },
+    data: {
+      path: 'data.success',
+    },
   },
   {
     id: '8',
     type: 'log',
-    position: { x: 660, y: 200 },
-    data: { label: '5' },
+    position: {
+      x: 658.0002688961907,
+      y: 162.86113127964492,
+    },
+    data: {
+      label: '5',
+    },
   },
   {
     id: '9',
     type: 'request',
-    position: { x: 470, y: -3 },
-    data: { label: '9' },
+    position: {
+      x: 566.155694293442,
+      y: -0.9753873320320343,
+    },
+    data: {
+      label: '9',
+    },
   },
   {
     id: '10',
     type: 'log',
-    position: { x: 770, y: 160 },
-    data: { label: '5' },
+    position: {
+      x: 843.5095406519356,
+      y: 90.94829020902236,
+    },
+    data: {
+      label: '5',
+    },
+  },
+  {
+    id: '11',
+    type: 'repeat',
+    position: {
+      x: 444.5094158058936,
+      y: 128.4544266353185,
+    },
+    data: {
+      repeat: 'indefinite',
+    },
+  },
+  {
+    id: '12',
+    type: 'string',
+    position: { x: 0, y: 0 },
+    data: {
+      value: 'Hello, World!',
+    },
+  },
+  {
+    id: '13',
+    type: 'number',
+    position: { x: 0, y: 35 },
+    data: {
+      value: 42,
+    },
+  },
+  {
+    id: '14',
+    type: 'boolean',
+    position: { x: 0, y: 70 },
+    data: {
+      value: true,
+    },
   },
 ];
 
-export const initialEdges: AppEdge[] = [
+export const initialEdges: Edge[] = [
   {
     id: '3-4',
     source: '3',
@@ -104,23 +180,33 @@ export const initialEdges: AppEdge[] = [
     targetHandle: HandleId.LogTarget,
   },
   {
-    id: '4-9',
-    source: '4',
-    target: '9',
+    id: '9-10',
+    source: '9',
+    target: '10',
     sourceHandle: HandleId.RequestSuccessSource,
-    targetHandle: HandleId.RequestTarget,
+    targetHandle: HandleId.LogTarget,
     style: {
       stroke: 'var(--color-pink-700)',
       strokeWidth: 2.5,
     },
   },
   {
-    type: 'loopCount',
-    id: '9-10',
-    source: '9',
-    target: '10',
+    id: '11-9',
+    source: '11',
+    target: '9',
+    sourceHandle: HandleId.RepeatSource,
+    targetHandle: HandleId.RequestTarget,
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+  },
+  {
+    id: '4-11',
+    source: '4',
+    target: '11',
     sourceHandle: HandleId.RequestSuccessSource,
-    targetHandle: HandleId.LogTarget,
+    targetHandle: HandleId.RepeatTarget,
     style: {
       stroke: 'var(--color-pink-700)',
       strokeWidth: 2.5,
