@@ -1,11 +1,12 @@
 import { getProperty } from 'dot-prop';
-import { runPromisesInBatchSequentially, HandleId } from '@flowy/shared';
+import { runPromisesInBatchSequentially, HandleId, wait } from '@flowy/shared';
 import type {
   AppNode,
   RequestNode,
   SelectNode,
   TriggerNode,
   Edge,
+  BatchPromiseInput,
 } from '@flowy/shared';
 import { Subscribable } from './subscribable';
 import { FlowyError } from '@flowy/shared';
@@ -77,7 +78,7 @@ export class FlowyManager extends Subscribable<Listener> {
   }
 
   async #handleConnections(connections: EdgeConnection[]) {
-    const promises: (() => Promise<void>)[] = [];
+    const promises: BatchPromiseInput<any> = [];
     for (const connection of connections) {
       const { targetId } = connection;
       const node = this.nodes.find((node) => node.id === targetId);
@@ -161,7 +162,7 @@ export class FlowyManager extends Subscribable<Listener> {
   async log(node: AppNode) {
     this.#setResult(node.id, { status: 'running' });
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await wait(3000);
     const parents = this.#getHandleConnections(
       node.id,
       'target',
@@ -197,7 +198,7 @@ export class FlowyManager extends Subscribable<Listener> {
       HandleId.RequestFailureSource
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await wait(3000);
 
     const result = {
       // FIXME: THIS is just a placeholder
@@ -221,7 +222,7 @@ export class FlowyManager extends Subscribable<Listener> {
   async select(node: SelectNode) {
     this.#setResult(node.id, { status: 'running' });
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await wait(3000);
 
     const parents = this.#getHandleConnections(
       node.id,

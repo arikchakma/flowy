@@ -1,4 +1,4 @@
-import type {Node} from '@xyflow/react';
+import type { Node } from '@xyflow/react';
 
 export type BooleanNode = Node<
   {
@@ -55,7 +55,6 @@ export type StringNode = Node<
 >;
 
 export type TriggerNode = Node<{}, 'trigger'>;
-
 
 export type AppNode =
   | RequestNode

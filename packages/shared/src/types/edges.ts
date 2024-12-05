@@ -1,1 +1,1 @@
-export type {Edge} from '@xyflow/react';
+export type { Edge } from '@xyflow/react';
