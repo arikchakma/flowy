@@ -2,11 +2,12 @@ import { getProperty } from 'dot-prop';
 import { runPromisesInBatchSequentially, HandleId, wait } from '@flowy/shared';
 import type {
   AppNode,
-  RequestNode,
-  SelectNode,
-  TriggerNode,
+  RequestNodeType,
+  SelectNodeType,
+  TriggerNodeType,
   Edge,
   BatchPromiseInput,
+  LogNodeType,
 } from '@flowy/shared';
 import { Subscribable } from './subscribable';
 import { FlowyError } from '@flowy/shared';
@@ -149,7 +150,7 @@ export class FlowyManager extends Subscribable<Listener> {
    * Nodes
    */
 
-  async trigger(node: TriggerNode) {
+  async trigger(node: TriggerNodeType) {
     const connections = this.#getHandleConnections(
       node.id,
       'source',
@@ -159,7 +160,7 @@ export class FlowyManager extends Subscribable<Listener> {
     await this.#handleConnections(connections);
   }
 
-  async log(node: AppNode) {
+  async log(node: LogNodeType) {
     this.#setResult(node.id, { status: 'running' });
 
     await wait(3000);
@@ -182,7 +183,7 @@ export class FlowyManager extends Subscribable<Listener> {
     this.#setResult(node.id, { status: 'finished' });
   }
 
-  async request(node: RequestNode) {
+  async request(node: RequestNodeType) {
     this.#setResult(node.id, { status: 'running' });
 
     const nodeId = node.id;
@@ -219,7 +220,7 @@ export class FlowyManager extends Subscribable<Listener> {
     }
   }
 
-  async select(node: SelectNode) {
+  async select(node: SelectNodeType) {
     this.#setResult(node.id, { status: 'running' });
 
     await wait(3000);

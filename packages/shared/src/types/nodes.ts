@@ -1,22 +1,22 @@
 import type { Node } from '@xyflow/react';
 
-export type BooleanNode = Node<
+export type BooleanNodeType = Node<
   {
     value: boolean;
   },
   'boolean'
 >;
 
-export type DelayNode = Node<
+export type DelayNodeType = Node<
   {
     duration: number;
   },
   'delay'
 >;
 
-export type LogNode = Node<{}, 'log'>;
+export type LogNodeType = Node<{}, 'log'>;
 
-export type NumberNode = Node<
+export type NumberNodeType = Node<
   {
     value: number;
   },
@@ -25,7 +25,7 @@ export type NumberNode = Node<
 
 export type LoopRepeatType = 'indefinite' | number;
 
-export type RepeatNode = Node<
+export type RepeatNodeType = Node<
   {
     /**
      * The number of times to repeat the animation before stopping. If set to
@@ -38,34 +38,34 @@ export type RepeatNode = Node<
   'repeat'
 >;
 
-export type RequestNode = Node<{}, 'request'>;
+export type RequestNodeType = Node<{}, 'request'>;
 
-export type SelectNode = Node<
+export type SelectNodeType = Node<
   {
     path: string;
   },
   'select'
 >;
 
-export type StringNode = Node<
+export type StringNodeType = Node<
   {
     value: string;
   },
   'string'
 >;
 
-export type TriggerNode = Node<{}, 'trigger'>;
+export type TriggerNodeType = Node<{}, 'trigger'>;
 
 export type AppNode =
-  | RequestNode
-  | LogNode
-  | TriggerNode
-  | SelectNode
-  | RepeatNode
-  | StringNode
-  | NumberNode
-  | BooleanNode
-  | DelayNode;
+  | RequestNodeType
+  | LogNodeType
+  | TriggerNodeType
+  | SelectNodeType
+  | RepeatNodeType
+  | StringNodeType
+  | NumberNodeType
+  | BooleanNodeType
+  | DelayNodeType;
 
 export enum HandleId {
   TriggerSource = 'TRIGGER_SOURCE',
