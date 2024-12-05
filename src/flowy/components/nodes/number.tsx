@@ -3,7 +3,7 @@ import { ALargeSmallIcon, ArrowUp10Icon } from 'lucide-react';
 import { ChangeEvent, memo, useState } from 'react';
 import { AppNode, HandleId } from '../../types';
 import { cn } from '../../utils/classname';
-import { useFlowyStore } from '../../stores/flowy-store';
+import { useNodeResult } from '../../../lib/use-flowy';
 
 export type NumberNode = Node<
   {
@@ -14,9 +14,7 @@ export type NumberNode = Node<
 
 function _NumberNode(props: NodeProps<NumberNode>) {
   const { selected, id: nodeId, data } = props;
-  const { value: defaultValue = '' } = data;
-
-  const { results } = useFlowyStore();
+  const { value: defaultValue = 0 } = data;
 
   const [value, setValue] = useState(defaultValue);
   const { updateNodeData } = useReactFlow<AppNode>();
@@ -31,7 +29,7 @@ function _NumberNode(props: NodeProps<NumberNode>) {
     updateNodeData(nodeId, { value: newValue });
   };
 
-  const result = results.get(nodeId);
+  const result = useNodeResult(nodeId);
 
   return (
     <>

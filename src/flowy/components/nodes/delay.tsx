@@ -1,24 +1,33 @@
 import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react';
-import { ALargeSmallIcon, ArrowUp10Icon, ToggleRightIcon } from 'lucide-react';
+import { LoaderIcon } from 'lucide-react';
 import { ChangeEvent, memo, useState } from 'react';
 import { AppNode, HandleId } from '../../types';
 import { cn } from '../../utils/classname';
-import { Switch } from '../select';
 import { useNodeResult } from '../../../lib/use-flowy';
 
-export type BooleanNode = Node<
+export type DelayNode = Node<
   {
-    value: boolean;
+    delay: number;
   },
-  'boolean'
+  'delay'
 >;
 
-function _BooleanNode(props: NodeProps<BooleanNode>) {
+function _DelayNode(props: NodeProps<DelayNode>) {
   const { selected, id: nodeId, data } = props;
-  const { value: defaultValue = false } = data;
+  const { delay: defaultValue } = data;
 
   const [value, setValue] = useState(defaultValue);
   const { updateNodeData } = useReactFlow<AppNode>();
+
+  const handleValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseInt(e.target.value, 10);
+    if (isNaN(newValue)) {
+      return;
+    }
+
+    setValue(newValue);
+    updateNodeData(nodeId, { delay: newValue });
+  };
 
   const result = useNodeResult(nodeId);
 
@@ -34,24 +43,32 @@ function _BooleanNode(props: NodeProps<BooleanNode>) {
         )}
       >
         <div className="flex h-[30px] shrink-0 items-center justify-center bg-zinc-800 p-2 pl-2.5">
-          <ToggleRightIcon className="size-3.5 stroke-[2.5]" />
+          <LoaderIcon className="size-3.5 stroke-[2.5]" />
         </div>
-        <div className="flex items-center gap-2 px-1 pr-2.5">
-          <Switch
-            checked={value}
-            onCheckedChange={(checked) => {
-              setValue(checked);
-              updateNodeData(nodeId, { value: checked });
-            }}
+        <div className="flex items-center pr-2.5">
+          <input
+            type="number"
+            placeholder="0"
+            min={0}
+            className="hide-number-controls w-13 px-2 py-1 pr-1 font-mono text-sm tabular-nums placeholder:font-sans placeholder:text-zinc-400 focus:outline-none"
+            value={value}
+            onChange={handleValueChange}
           />
-          <span className="font-mono text-xs uppercase">
-            {value ? 'true' : 'false'}
+          <span className="inline-block text-xs leading-none text-zinc-400">
+            ms
           </span>
         </div>
       </div>
 
       <Handle
-        id={HandleId.NumberSource}
+        id={HandleId.DelayTarget}
+        type="target"
+        position={Position.Left}
+        className="size-2.5! border-2! bg-zinc-900!"
+      />
+
+      <Handle
+        id={HandleId.DelaySource}
         type="source"
         position={Position.Right}
         className="size-2.5! border-2! bg-zinc-900!"
@@ -60,4 +77,4 @@ function _BooleanNode(props: NodeProps<BooleanNode>) {
   );
 }
 
-export const BooleanNode = memo(_BooleanNode);
+export const DelayNode = memo(_DelayNode);

@@ -17,6 +17,7 @@ import { RepeatNode } from './components/nodes/repeat';
 import { StringNode } from './components/nodes/string';
 import { NumberNode } from './components/nodes/number';
 import { BooleanNode } from './components/nodes/boolean';
+import { DelayNode } from './components/nodes/delay';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -27,6 +28,7 @@ const nodeTypes = {
   string: StringNode,
   number: NumberNode,
   boolean: BooleanNode,
+  delay: DelayNode,
 };
 
 const edgeTypes = {};

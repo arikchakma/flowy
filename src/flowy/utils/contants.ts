@@ -129,6 +129,14 @@ export const initialNodes: AppNode[] = [
       value: true,
     },
   },
+  {
+    id: '15',
+    type: 'delay',
+    position: { x: 0, y: 105 },
+    data: {
+      delay: 1000,
+    },
+  },
 ];
 
 export const initialEdges: Edge[] = [

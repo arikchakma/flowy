@@ -1,21 +1,12 @@
-import {
-  Handle,
-  Node,
-  NodeProps,
-  Position,
-  useHandleConnections,
-} from '@xyflow/react';
+import { Handle, Node, NodeProps, Position } from '@xyflow/react';
 import { TargetIcon } from 'lucide-react';
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { HandleId } from '../../types';
 import { cn } from '../../utils/classname';
-import { useFlowyStore } from '../../stores/flowy-store';
 
 export type TriggerNode = Node<{}, 'trigger'>;
 
 function _TriggerNode(props: NodeProps<TriggerNode>) {
-  const { status } = useFlowyStore();
-
   const { selected, id: nodeId } = props;
 
   return (

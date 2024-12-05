@@ -1,10 +1,11 @@
 import { Panel, useReactFlow } from '@xyflow/react';
 import { MaximizeIcon, PlayIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
-import { useFlowyStore } from '../stores/flowy-store';
+import { flowManager } from '../../lib/flow-manager';
+import { AppNode } from '../types';
 
 export function BubbleMenu() {
-  const { status, start } = useFlowyStore();
-  const { zoomIn, zoomOut, fitView, getNodes } = useReactFlow();
+  const { zoomIn, zoomOut, fitView, getNodes, getEdges } =
+    useReactFlow<AppNode>();
 
   return (
     <Panel position="bottom-center">
@@ -30,8 +31,8 @@ export function BubbleMenu() {
 
         <button
           className="flex min-h-8 cursor-pointer items-center gap-1 rounded-lg bg-zinc-900 px-2 py-1.5 leading-none text-white hover:bg-zinc-800"
-          onClick={() => {
-            start();
+          onClick={async () => {
+            await flowManager.run(getNodes(), getEdges());
           }}
         >
           <PlayIcon className="size-3.5 shrink-0 fill-current stroke-[2.5]" />

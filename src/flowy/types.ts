@@ -6,6 +6,7 @@ import { RepeatNode } from './components/nodes/repeat';
 import { StringNode } from './components/nodes/string';
 import { NumberNode } from './components/nodes/number';
 import { BooleanNode } from './components/nodes/boolean';
+import { DelayNode } from './components/nodes/delay';
 
 export type AppNode =
   | RequestNode
@@ -15,7 +16,8 @@ export type AppNode =
   | RepeatNode
   | StringNode
   | NumberNode
-  | BooleanNode;
+  | BooleanNode
+  | DelayNode;
 
 export enum HandleId {
   TriggerSource = 'TRIGGER_SOURCE',
@@ -34,4 +36,9 @@ export enum HandleId {
   StringSource = 'STRING_SOURCE',
 
   NumberSource = 'NUMBER_SOURCE',
+
+  BooleanSource = 'BOOLEAN_SOURCE',
+
+  DelaySource = 'DELAY_SOURCE',
+  DelayTarget = 'DELAY_TARGET',
 }

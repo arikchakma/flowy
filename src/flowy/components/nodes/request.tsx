@@ -9,15 +9,16 @@ import { Parentheses, PencilIcon, WifiIcon } from 'lucide-react';
 import { memo, useCallback, useEffect } from 'react';
 import { cn } from '../../utils/classname';
 import { HandleId } from '../../types';
-import { useFlowyStore } from '../../stores/flowy-store';
+import { useNodeResult } from '../../../lib/use-flowy';
 
 export type RequestNode = Node<{}, 'request'>;
 
 function _RequestNode(props: NodeProps<RequestNode>) {
-  const { results } = useFlowyStore();
   const { selected, id: nodeId } = props;
 
-  const result = results.get(nodeId);
+  const result = useNodeResult(nodeId);
+
+  console.log('RENDER RequestNode', nodeId);
 
   return (
     <>

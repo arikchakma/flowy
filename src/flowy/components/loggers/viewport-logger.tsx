@@ -1,5 +1,4 @@
 import { Panel, useStore } from '@xyflow/react';
-import { useFlowyStore } from '../../stores/flowy-store';
 
 export function ViewportLogger() {
   const viewport = useStore(
@@ -7,15 +6,13 @@ export function ViewportLogger() {
       `x: ${s.transform[0].toFixed(2)}, y: ${s.transform[1].toFixed(2)}, zoom: ${s.transform[2].toFixed(2)}`
   );
 
-  const { results, status } = useFlowyStore();
-
   return (
     <Panel position="top-left" className="font-mono text-sm">
       <div>{viewport}</div>
       <div>Status: {status}</div>
       <div>
         Results:{' '}
-        <pre>
+        {/* <pre>
           {JSON.stringify(
             Array.from(results.entries()).map(([key, value]) => ({
               nodeId: key,
@@ -24,7 +21,7 @@ export function ViewportLogger() {
             null,
             2
           )}
-        </pre>
+        </pre> */}
       </div>
     </Panel>
   );

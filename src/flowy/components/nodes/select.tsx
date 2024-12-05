@@ -11,7 +11,7 @@ import { LinkIcon } from 'lucide-react';
 import { ChangeEvent, memo, useEffect, useState } from 'react';
 import { AppNode, HandleId } from '../../types';
 import { cn } from '../../utils/classname';
-import { useFlowyStore } from '../../stores/flowy-store';
+import { useNodeResult } from '../../../lib/use-flowy';
 
 export type SelectNode = Node<
   {
@@ -24,8 +24,6 @@ function _SelectNode(props: NodeProps<SelectNode>) {
   const { selected, id: nodeId, data } = props;
   const { path = '' } = data;
 
-  const { results } = useFlowyStore();
-
   const [selectPath, setSelectPath] = useState(path);
   const { updateNodeData } = useReactFlow<AppNode>();
 
@@ -34,7 +32,7 @@ function _SelectNode(props: NodeProps<SelectNode>) {
     updateNodeData(nodeId, { path: e.target.value });
   };
 
-  const result = results.get(nodeId);
+  const result = useNodeResult(nodeId);
 
   return (
     <>

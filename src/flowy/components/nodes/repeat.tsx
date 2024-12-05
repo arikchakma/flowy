@@ -3,7 +3,7 @@ import { ArrowUp10Icon, InfinityIcon } from 'lucide-react';
 import { memo, useRef, useState } from 'react';
 import { AppNode, HandleId } from '../../types';
 import { cn } from '../../utils/classname';
-import { useFlowyStore } from '../../stores/flowy-store';
+import { useNodeResult } from '../../../lib/use-flowy';
 
 export type LoopRepeatType = 'indefinite' | number;
 
@@ -21,7 +21,6 @@ export type RepeatNode = Node<
 >;
 
 function _RepeatNode(props: NodeProps<RepeatNode>) {
-  const { results } = useFlowyStore();
   const { selected, id: nodeId, data } = props;
 
   const { updateNodeData } = useReactFlow<AppNode>();
@@ -31,7 +30,7 @@ function _RepeatNode(props: NodeProps<RepeatNode>) {
   const [repeatCount, setRepeatCount] = useState<LoopRepeatType>(repeat);
   const isIndefinite = repeatCount === 'indefinite';
 
-  const result = results.get(nodeId);
+  const result = useNodeResult(nodeId);
 
   return (
     <>

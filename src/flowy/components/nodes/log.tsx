@@ -10,15 +10,14 @@ import { Parentheses } from 'lucide-react';
 import { memo, useCallback, useEffect } from 'react';
 import { HandleId } from '../../types';
 import { cn } from '../../utils/classname';
-import { useFlowyStore } from '../../stores/flowy-store';
+import { useNodeResult } from '../../../lib/use-flowy';
 
 export type LogNode = Node<{}, 'log'>;
 
 function _LogNode(props: NodeProps<LogNode>) {
-  const { results } = useFlowyStore();
   const { selected, id: nodeId } = props;
 
-  const result = results.get(nodeId);
+  const result = useNodeResult(nodeId);
 
   return (
     <>
