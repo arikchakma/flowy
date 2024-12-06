@@ -76,8 +76,8 @@ export const initialNodes: AppNode[] = [
     id: '9',
     type: 'request',
     position: {
-      x: 566.155694293442,
-      y: -0.9753873320320343,
+      x: 600,
+      y: 0,
     },
     data: {
       label: '9',
@@ -96,13 +96,13 @@ export const initialNodes: AppNode[] = [
   },
   {
     id: '11',
-    type: 'repeat',
+    type: 'delay',
     position: {
       x: 444.5094158058936,
       y: 128.4544266353185,
     },
     data: {
-      repeat: 'indefinite',
+      duration: 1000,
     },
   },
   {
@@ -202,7 +202,7 @@ export const initialEdges: Edge[] = [
     id: '11-9',
     source: '11',
     target: '9',
-    sourceHandle: HandleId.RepeatSource,
+    sourceHandle: HandleId.DelaySource,
     targetHandle: HandleId.RequestTarget,
     style: {
       stroke: 'var(--color-zinc-900)',
@@ -214,7 +214,7 @@ export const initialEdges: Edge[] = [
     source: '4',
     target: '11',
     sourceHandle: HandleId.RequestSuccessSource,
-    targetHandle: HandleId.RepeatTarget,
+    targetHandle: HandleId.DelayTarget,
     style: {
       stroke: 'var(--color-pink-700)',
       strokeWidth: 2.5,

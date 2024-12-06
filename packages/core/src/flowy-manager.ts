@@ -11,6 +11,7 @@ import type {
 } from '@flowy/shared';
 import { Subscribable } from './subscribable';
 import { FlowyError } from '@flowy/shared';
+import { DelayNodeType } from '@flowy/shared';
 
 export type FlowyResults = Map<string, StepResult>;
 
@@ -254,6 +255,41 @@ export class FlowyManager extends Subscribable<Listener> {
       data: pathResult,
       error: undefined,
     });
+
+    await this.#handleConnections(children);
+  }
+
+  async delay(node: DelayNodeType) {
+    this.#setResult(node.id, { status: 'running' });
+
+    await wait(node.data.duration);
+
+    const parents = this.#getHandleConnections(
+      node.id,
+      'target',
+      HandleId.DelayTarget
+    );
+
+    let result: StepResult | undefined;
+    for (const parent of parents) {
+      const { sourceId: parentId } = parent;
+      result = this.#results.get(parentId);
+      if (!result) {
+        continue;
+      }
+    }
+
+    this.#setResult(node.id, {
+      status: 'finished',
+      data: result?.data,
+      error: result?.error,
+    });
+
+    const children = this.#getHandleConnections(
+      node.id,
+      'source',
+      HandleId.DelaySource
+    );
 
     await this.#handleConnections(children);
   }

@@ -29,7 +29,7 @@ function _LogNode(props: NodeProps<LogNodeType>) {
         )}
       >
         <Parentheses className="size-3.5 stroke-[2.5]" />
-        <span className="text-sm leading-none font-medium">Log Result</span>
+        <span className="text-sm leading-none font-medium">Log</span>
       </div>
 
       <Handle
