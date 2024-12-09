@@ -56,6 +56,20 @@ export type StringNodeType = Node<
 
 export type TriggerNodeType = Node<{}, 'trigger'>;
 
+export type RecordNodeType = Node<
+  {
+    /**
+     * The values will be stored in a map where the key is the name of the
+     * value and the value is the handle id where the value is stored.
+     */
+    values: {
+      key: string;
+      handleId: string;
+    }[];
+  },
+  'record'
+>;
+
 export type AppNode =
   | RequestNodeType
   | LogNodeType
@@ -65,7 +79,8 @@ export type AppNode =
   | StringNodeType
   | NumberNodeType
   | BooleanNodeType
-  | DelayNodeType;
+  | DelayNodeType
+  | RecordNodeType;
 
 export enum HandleId {
   TriggerSource = 'TRIGGER_SOURCE',
@@ -89,4 +104,6 @@ export enum HandleId {
 
   DelaySource = 'DELAY_SOURCE',
   DelayTarget = 'DELAY_TARGET',
+
+  RecordSource = 'RECORD_SOURCE',
 }

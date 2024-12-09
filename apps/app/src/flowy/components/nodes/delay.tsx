@@ -28,7 +28,7 @@ function _DelayNode(props: NodeProps<DelayNodeType>) {
     <>
       <div
         className={cn(
-          'flex items-stretch overflow-hidden rounded-full bg-zinc-900 text-white inset-ring-1 shadow-sm inset-ring-zinc-200/20 transition-shadow',
+          'inset-ring-1 inset-ring-zinc-200/20 flex items-stretch overflow-hidden rounded-full bg-zinc-900 text-white shadow-sm transition-shadow',
           !selected && 'hover:shadow-md',
           selected && 'outline-1 outline-offset-1 outline-zinc-400',
           result?.status === 'running' &&

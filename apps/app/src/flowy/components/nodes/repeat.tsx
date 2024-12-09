@@ -21,7 +21,7 @@ function _RepeatNode(props: NodeProps<RepeatNodeType>) {
     <>
       <div
         className={cn(
-          'flex items-center gap-1.5 rounded-lg bg-zinc-900 p-0.5 text-white inset-ring-1 shadow-sm inset-ring-zinc-200/20 transition-shadow',
+          'inset-ring-1 inset-ring-zinc-200/20 flex items-center gap-1.5 rounded-lg bg-zinc-900 p-0.5 text-white shadow-sm transition-shadow',
           !selected && 'hover:shadow-md',
           selected && 'outline-1 outline-offset-1 outline-zinc-400',
           result?.status === 'running' &&
@@ -30,7 +30,7 @@ function _RepeatNode(props: NodeProps<RepeatNodeType>) {
       >
         <button
           className={cn(
-            'flex aspect-square size-6.5 shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400',
+            'size-6.5 flex aspect-square shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400',
             isIndefinite && 'bg-zinc-100/20 text-white'
           )}
           onClick={() => {
@@ -43,7 +43,7 @@ function _RepeatNode(props: NodeProps<RepeatNodeType>) {
         <div className="flex shrink-0 items-stretch">
           <button
             className={cn(
-              'flex aspect-square size-6.5 shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400',
+              'size-6.5 flex aspect-square shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400',
               !isIndefinite &&
                 'cursor-default rounded-r-none bg-zinc-100/20 text-white'
             )}

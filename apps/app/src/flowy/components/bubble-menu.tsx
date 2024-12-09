@@ -5,7 +5,7 @@ import { useFlowyManager } from '@flowy/react';
 
 export function BubbleMenu() {
   const flowManager = useFlowyManager();
-  
+
   const { zoomIn, zoomOut, fitView, getNodes, getEdges } =
     useReactFlow<AppNode>();
 

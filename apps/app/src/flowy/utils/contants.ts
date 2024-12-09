@@ -1,5 +1,6 @@
 import { AppNode, HandleId } from '@flowy/shared';
 import { Edge } from '@xyflow/react';
+import { nanoid } from 'nanoid';
 
 export const REQUEST_STROKE_STYLE = {
   stroke: 'var(--color-pink-700)',
@@ -135,6 +136,56 @@ export const initialNodes: AppNode[] = [
     position: { x: 0, y: 105 },
     data: {
       duration: 1000,
+    },
+  },
+  {
+    id: '16',
+    type: 'record',
+    position: { x: 0, y: 300 },
+    data: {
+      values: [
+        {
+          key: 'Authorization',
+          handleId: nanoid(),
+        },
+        {
+          key: 'Content-Type',
+          handleId: nanoid(),
+        },
+        {
+          key: 'Accept',
+          handleId: nanoid(),
+        },
+        {
+          key: 'User-Agent',
+          handleId: nanoid(),
+        },
+      ],
+    },
+  },
+  {
+    id: '17',
+    type: 'record',
+    position: { x: 240, y: 300 },
+    data: {
+      values: [
+        {
+          key: 'first_name',
+          handleId: nanoid(),
+        },
+        {
+          key: 'last_name',
+          handleId: nanoid(),
+        },
+        {
+          key: 'email',
+          handleId: nanoid(),
+        },
+        {
+          key: 'phone',
+          handleId: nanoid(),
+        },
+      ],
     },
   },
 ];

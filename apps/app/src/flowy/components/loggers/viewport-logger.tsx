@@ -8,21 +8,7 @@ export function ViewportLogger() {
 
   return (
     <Panel position="top-left" className="font-mono text-sm">
-      <div>{viewport}</div>
-      <div>Status: {status}</div>
-      <div>
-        Results:{' '}
-        {/* <pre>
-          {JSON.stringify(
-            Array.from(results.entries()).map(([key, value]) => ({
-              nodeId: key,
-              ...value,
-            })),
-            null,
-            2
-          )}
-        </pre> */}
-      </div>
+      <span>{viewport}</span>
     </Panel>
   );
 }

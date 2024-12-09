@@ -5,6 +5,7 @@ import {
   ReactFlow,
   ReactFlowProvider,
 } from '@xyflow/react';
+import { FlowyManagerProvider } from '@flowy/react';
 
 import { TriggerNode } from './components/nodes/trigger';
 import { RequestNode } from './components/nodes/request';
@@ -18,8 +19,8 @@ import { StringNode } from './components/nodes/string';
 import { NumberNode } from './components/nodes/number';
 import { BooleanNode } from './components/nodes/boolean';
 import { DelayNode } from './components/nodes/delay';
-import { FlowyManagerProvider } from '@flowy/react';
 import { flowyManager } from './utils/flowy-manager';
+import { RecordNode } from './components/nodes/record';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -31,6 +32,7 @@ const nodeTypes = {
   number: NumberNode,
   boolean: BooleanNode,
   delay: DelayNode,
+  record: RecordNode,
 };
 
 const edgeTypes = {};

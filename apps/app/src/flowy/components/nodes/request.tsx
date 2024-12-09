@@ -16,13 +16,11 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
 
   const result = useNodeResult(nodeId);
 
-  console.log('RENDER RequestNode', nodeId);
-
   return (
     <>
       <div
         className={cn(
-          'max-w-52 min-w-52 rounded-xl bg-pink-200 p-1 inset-ring-1 inset-ring-pink-300/20 transition-shadow',
+          'inset-ring-1 inset-ring-pink-300/20 min-w-52 max-w-52 rounded-xl bg-pink-200 p-1 transition-shadow',
           !selected && 'hover:shadow-md',
           selected && 'outline-1 outline-offset-1 outline-pink-300',
           result?.status === 'running' &&
@@ -30,16 +28,16 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
         )}
       >
         <div className="flex items-center justify-between px-1 py-2 pt-1.5">
-          <label className="pointer-events-none block text-sm leading-none font-medium text-pink-700">
+          <label className="pointer-events-none block text-sm font-medium leading-none text-pink-700">
             Send Request
           </label>
 
-          <button className="flex size-4.5 cursor-pointer items-center justify-center rounded-md text-pink-700 opacity-60 transition-colors hover:bg-pink-300 hover:opacity-100">
+          <button className="size-4.5 flex cursor-pointer items-center justify-center rounded-md text-pink-700 opacity-60 transition-colors hover:bg-pink-300 hover:opacity-100">
             <PencilIcon className="size-2.5 stroke-[2.5]" />
           </button>
         </div>
 
-        <div className="rounded-lg rounded-b-xs bg-white p-2">
+        <div className="rounded-b-xs rounded-lg bg-white p-2">
           <div className="flex items-center justify-between">
             <span className="text-xs text-gray-500">Method</span>
             <span className="font-mono text-xs">GET</span>
@@ -52,7 +50,7 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
           </div>
         </div>
 
-        <div className="mt-0.5 rounded-lg rounded-t-xs bg-white/70 p-2 text-xs shadow">
+        <div className="rounded-t-xs mt-0.5 rounded-lg bg-white/70 p-2 text-xs shadow">
           <div className="flex items-center justify-between gap-1">
             <div className="flex items-center gap-1">
               <WifiIcon className="size-2.5 rotate-90 stroke-[2.5]" />

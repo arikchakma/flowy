@@ -12,7 +12,7 @@ export function Input() {
           placeholder="Write something..."
           name="comment"
           id="comment"
-          className="block field-sizing-content w-full resize-none rounded-md border-0 px-2 py-1.5 text-gray-900 ring-1 shadow-sm ring-gray-300 ring-inset focus:outline-none sm:text-sm/6"
+          className="field-sizing-content block w-full resize-none rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none sm:text-sm/6"
           spellCheck="false"
         />
       </div>

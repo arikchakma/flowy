@@ -11,13 +11,13 @@ function _TriggerNode(props: NodeProps<TriggerNodeType>) {
     <>
       <div
         className={cn(
-          'flex items-center gap-1.5 rounded-full bg-zinc-900 px-2.5 py-2 pr-4 text-white inset-ring-1 shadow-sm inset-ring-zinc-200/20 transition-shadow',
+          'inset-ring-1 inset-ring-zinc-200/20 flex items-center gap-1.5 rounded-full bg-zinc-900 px-2.5 py-2 pr-4 text-white shadow-sm transition-shadow',
           !selected && 'hover:shadow-md',
           selected && 'outline-1 outline-offset-1 outline-zinc-400'
         )}
       >
         <TargetIcon className="size-3.5 stroke-[2.5]" />
-        <span className="text-sm leading-none font-medium">Trigger</span>
+        <span className="text-sm font-medium leading-none">Trigger</span>
       </div>
 
       <Handle
