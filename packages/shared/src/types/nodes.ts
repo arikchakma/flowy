@@ -38,7 +38,49 @@ export type RepeatNodeType = Node<
   'repeat'
 >;
 
-export type RequestNodeType = Node<{}, 'request'>;
+export const allowedRequestMethods = ['GET', 'POST', 'PUT', 'DELETE'] as const;
+export type RequestMethod = (typeof allowedRequestMethods)[number];
+
+export type RequestNodeType = Node<
+  {
+    /**
+     * The method to use for the request. This can be one of the following:
+     * - `"GET"`
+     * - `"POST"`
+     * - `"PUT"`
+     * - `"DELETE"`
+     *
+     * If not provided, this defaults to `"GET"`.
+     */
+    method?: RequestMethod;
+
+    /**
+     * The URL to send the request to with the method specified.
+     * @example `"https://arikko.dev/v1/v1-health"`
+     */
+    url: string;
+
+    /**
+     * The headers to send with the request. This values will be sent as is.
+     * They will be added via the Record node.
+     *
+     * @example `{ "Content-Type": "application/json" }`
+     * @default `{}`
+     */
+    headers?: Record<string, any>;
+
+    /**
+     * The body to send with the request. This values will be sent as is.
+     * They will be added via the Record node. This is only used for methods
+     * that support a body. Like `"POST"` and `"PUT"`.
+     *
+     * @example `{ "key": "value" }`
+     * @default `{}`
+     */
+    body?: Record<string, any>;
+  },
+  'request'
+>;
 
 export type SelectNodeType = Node<
   {
@@ -89,6 +131,8 @@ export enum HandleId {
   RequestSuccessSource = 'REQUEST_SUCCESS_SOURCE',
   RequestFailureSource = 'REQUEST_FAILURE_SOURCE',
   RequestTarget = 'REQUEST_TARGET',
+  RequestHeadersTarget = 'REQUEST_HEADERS_TARGET',
+  RequestBodyTarget = 'REQUEST_BODY_TARGET',
 
   SelectSource = 'SELECT_SOURCE',
   SelectTarget = 'SELECT_TARGET',

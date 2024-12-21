@@ -2,7 +2,7 @@ import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react';
 import { ToggleRightIcon } from 'lucide-react';
 import { memo, useState } from 'react';
 import { cn } from '../../utils/classname';
-import { Switch } from '../select';
+import { Switch } from '../switch';
 import { BooleanNodeType, HandleId } from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 

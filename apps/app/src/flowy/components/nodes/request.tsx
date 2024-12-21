@@ -1,20 +1,24 @@
-import {
-  Handle,
-  Node,
-  NodeProps,
-  Position,
-  useHandleConnections,
-} from '@xyflow/react';
-import { Parentheses, PencilIcon, WifiIcon } from 'lucide-react';
-import { memo, useCallback, useEffect } from 'react';
+import { Handle, NodeProps, Position, useReactFlow } from '@xyflow/react';
+import { CurlyBracesIcon, Parentheses, WifiIcon } from 'lucide-react';
+import { memo, useRef, useState } from 'react';
 import { cn } from '../../utils/classname';
-import { HandleId, RequestNodeType } from '@flowy/shared';
+import { HandleId, RequestMethod, RequestNodeType } from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
+import { SelectNative } from '../select';
+import { flushSync } from 'react-dom';
 
 function _RequestNode(props: NodeProps<RequestNodeType>) {
-  const { selected, id: nodeId } = props;
+  const { selected, id: nodeId, data } = props;
 
+  const { updateNodeData } = useReactFlow<RequestNodeType>();
   const result = useNodeResult(nodeId);
+
+  const { method: _method = 'GET', url: _url = '' } = data;
+  const [method, setMethod] = useState<RequestMethod>(_method);
+  const [url, setUrl] = useState<string>(_url);
+
+  const urlInputRef = useRef<HTMLInputElement>(null);
+  const [isUpdatingUrl, setIsUpdatingUrl] = useState(false);
 
   return (
     <>
@@ -31,23 +35,104 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
           <label className="pointer-events-none block text-sm font-medium leading-none text-pink-700">
             Send Request
           </label>
-
-          <button className="size-4.5 flex cursor-pointer items-center justify-center rounded-md text-pink-700 opacity-60 transition-colors hover:bg-pink-300 hover:opacity-100">
-            <PencilIcon className="size-2.5 stroke-[2.5]" />
-          </button>
         </div>
 
         <div className="rounded-b-xs rounded-lg bg-white p-2">
           <div className="flex items-center justify-between">
             <span className="text-xs text-gray-500">Method</span>
-            <span className="font-mono text-xs">GET</span>
+            <SelectNative
+              iconClassName="size-3.5"
+              className="h-4 appearance-none border-none !py-0 text-right font-mono text-xs shadow-none"
+              value={method}
+              onChange={(e) => {
+                const newMethod = e.target.value as RequestMethod;
+                setMethod(newMethod);
+                updateNodeData(nodeId, { method: newMethod });
+              }}
+            >
+              <option>GET</option>
+              <option>POST</option>
+              <option>PUT</option>
+              <option>DELETE</option>
+            </SelectNative>
           </div>
           <div className="mt-1.5 flex items-center justify-between gap-3">
             <span className="text-xs text-gray-500">URL</span>
-            <span className="min-w-0 truncate font-mono text-xs">
-              https://arikko.dev/v1/v1-health
-            </span>
+
+            {!isUpdatingUrl && (
+              <button
+                className="nodrag nopan min-w-0 cursor-pointer truncate pr-1 font-mono text-xs"
+                onClick={() => {
+                  flushSync(() => {
+                    setIsUpdatingUrl(true);
+                  });
+
+                  urlInputRef.current?.focus();
+                }}
+              >
+                {url}
+              </button>
+            )}
+
+            {isUpdatingUrl && (
+              <div className="relative grow">
+                <form
+                  className="absolute inset-0 flex items-center justify-end"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+
+                    const newUrl = urlInputRef.current?.value || _url;
+                    setUrl(newUrl);
+                    updateNodeData(nodeId, { url: newUrl });
+                    setIsUpdatingUrl(false);
+                  }}
+                >
+                  <input
+                    ref={urlInputRef}
+                    type="text"
+                    className="nodrag nopan max-w-full pr-1 text-right font-mono text-xs caret-pink-800 outline-none focus-visible:outline-none"
+                    placeholder="https://arikko.dev/v1/v1-health"
+                    onBlur={(e) => {
+                      const newUrl = e.target.value || _url;
+                      setUrl(newUrl);
+                      updateNodeData(nodeId, { url: newUrl });
+                      setIsUpdatingUrl(false);
+                    }}
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                  />
+                </form>
+              </div>
+            )}
           </div>
+        </div>
+
+        <div className="rounded-xs mt-0.5 bg-white p-2 text-xs shadow">
+          <div className="relative flex items-center gap-1">
+            <CurlyBracesIcon className="size-2.5 stroke-[2.5]" />
+            <span className="leading-none text-gray-500">Headers</span>
+
+            <Handle
+              id={HandleId.RequestHeadersTarget}
+              type="target"
+              position={Position.Left}
+              className="size-2.5! -z-10! -translate-x-3! border-none! bg-pink-700!"
+            />
+          </div>
+
+          {(method === 'POST' || method === 'PUT') && (
+            <div className="relative mt-2 flex items-center gap-1">
+              <CurlyBracesIcon className="size-2.5 stroke-[2.5]" />
+              <span className="leading-none text-gray-500">Body</span>
+
+              <Handle
+                id={HandleId.RequestBodyTarget}
+                type="target"
+                position={Position.Left}
+                className="size-2.5! -z-10! -translate-x-3! border-none! bg-pink-700!"
+              />
+            </div>
+          )}
         </div>
 
         <div className="rounded-t-xs mt-0.5 rounded-lg bg-white/70 p-2 text-xs shadow">

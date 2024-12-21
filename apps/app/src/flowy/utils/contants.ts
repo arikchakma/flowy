@@ -26,7 +26,8 @@ export const initialNodes: AppNode[] = [
       y: 109,
     },
     data: {
-      label: '4',
+      method: 'GET',
+      url: 'https://arikko.dev/v1/v1-health',
     },
   },
   {
@@ -81,7 +82,8 @@ export const initialNodes: AppNode[] = [
       y: 0,
     },
     data: {
-      label: '9',
+      method: 'GET',
+      url: 'https://arikko.dev/v1/v1-health',
     },
   },
   {
@@ -158,6 +160,18 @@ export const initialNodes: AppNode[] = [
         },
         {
           key: 'User-Agent',
+          handleId: nanoid(),
+        },
+        {
+          key: 'X-Forwarded-For',
+          handleId: nanoid(),
+        },
+        {
+          key: 'X-Forwarded-Proto',
+          handleId: nanoid(),
+        },
+        {
+          key: 'X-Maily-Key',
           handleId: nanoid(),
         },
       ],

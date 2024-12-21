@@ -1,22 +1,11 @@
-import {
-  Handle,
-  Node,
-  NodeProps,
-  Position,
-  useHandleConnections,
-} from '@xyflow/react';
-import {
-  Parentheses,
-  PencilIcon,
-  PlusIcon,
-  WifiIcon,
-  XIcon,
-} from 'lucide-react';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { Handle, NodeProps, Position } from '@xyflow/react';
+import { PlusIcon, WifiIcon, XIcon } from 'lucide-react';
+import { memo, useState } from 'react';
 import { cn } from '../../utils/classname';
 import { HandleId, RecordNodeType } from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 import { nanoid } from 'nanoid';
+import { flushSync } from 'react-dom';
 
 function _RecordNode(props: NodeProps<RecordNodeType>) {
   const { selected, id: nodeId, data } = props;
@@ -31,7 +20,7 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
     <>
       <div
         className={cn(
-          'inset-ring-1 inset-ring-violet-300/20 min-w-52 max-w-52 rounded-xl bg-violet-200 p-1 transition-shadow',
+          'inset-ring-1 inset-ring-violet-300/20 min-w-52 rounded-xl bg-violet-200 p-1 transition-shadow',
           !selected && 'hover:shadow-md',
           selected && 'outline-1 outline-offset-1 outline-violet-300',
           result?.status === 'running' &&
@@ -53,20 +42,42 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
 
               return (
                 <div
-                  key={key}
+                  key={handleId}
                   className={cn(
-                    'relative py-1.5',
+                    'nodrag relative py-1.5',
                     isFirst && 'pt-0',
                     isLast && 'pb-0'
                   )}
                 >
                   <div className="flex items-center gap-1">
-                    <span className="text-xs font-mono leading-none grow">
-                      {key}
-                    </span>
+                    <div
+                      className="nodrag max-w-52 cursor-text break-words font-mono text-xs leading-none outline-none"
+                      contentEditable={true}
+                      suppressContentEditableWarning={true}
+                      dangerouslySetInnerHTML={{ __html: key }}
+                      spellCheck={false}
+                      onBlur={(e) => {
+                        const newKey = e.currentTarget.textContent || '';
+                        setValues((values) =>
+                          values.map((value) =>
+                            value.handleId === handleId
+                              ? { ...value, key: newKey }
+                              : value
+                          )
+                        );
+                      }}
+                      data-handle-id={handleId}
+                    ></div>
 
-                    <div className="flex items-center gap-0.5">
-                      <button className="size-4 rounded-md flex items-center justify-center text-violet-300 hover:bg-violet-100 hover:text-violet-700 cursor-pointer">
+                    <div className="ml-auto flex items-center gap-0.5">
+                      <button
+                        className="flex size-4 cursor-pointer items-center justify-center rounded-md text-violet-300 hover:bg-violet-100 hover:text-violet-700"
+                        onClick={() => {
+                          setValues((values) =>
+                            values.filter((_, i) => i !== index)
+                          );
+                        }}
+                      >
                         <XIcon className="size-2.5 stroke-[2.5]" />
                       </button>
                     </div>
@@ -83,17 +94,50 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
           </div>
         </div>
 
-        <div className="mt-0.5 rounded-lg rounded-t-xs bg-white/70 p-2 text-xs shadow">
-          <div className="flex items-center justify-end gap-1 relative">
-            <WifiIcon className="size-2.5 rotate-90 stroke-[2.5]" />
-            <span className="leading-none">Send</span>
+        <div className="rounded-t-xs mt-0.5 rounded-lg bg-white/70 p-2 text-xs shadow">
+          <div className="flex items-center justify-between gap-1">
+            <button
+              className="flex size-4 cursor-pointer items-center justify-center rounded-md text-violet-600 hover:bg-violet-200 hover:text-violet-700"
+              onClick={() => {
+                const handleId = nanoid(4);
+                flushSync(() =>
+                  setValues((values) => [
+                    ...values,
+                    {
+                      key: '',
+                      handleId,
+                    },
+                  ])
+                );
 
-            <Handle
-              id={HandleId.RequestTarget}
-              type="source"
-              position={Position.Right}
-              className="size-2.5! border-none! bg-violet-700! -z-10 translate-x-3"
-            />
+                const handle = document.querySelector(
+                  `[data-handle-id="${handleId}"]`
+                ) as HTMLElement;
+
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.selectNodeContents(handle);
+                range.collapse(false);
+                sel?.removeAllRanges();
+                sel?.addRange(range);
+
+                handle?.focus();
+              }}
+            >
+              <PlusIcon className="size-2.5 rotate-90 stroke-[2.5]" />
+            </button>
+
+            <div className="relative flex items-center justify-end gap-1">
+              <WifiIcon className="size-2.5 rotate-90 stroke-[2.5]" />
+              <span className="leading-none">Send</span>
+
+              <Handle
+                id={HandleId.RequestTarget}
+                type="source"
+                position={Position.Right}
+                className="size-2.5! border-none! bg-violet-700! -z-10 translate-x-3"
+              />
+            </div>
           </div>
         </div>
       </div>
