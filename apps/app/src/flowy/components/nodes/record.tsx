@@ -51,7 +51,7 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
                 >
                   <div className="flex items-center gap-1">
                     <div
-                      className="nodrag max-w-52 cursor-text break-words font-mono text-xs leading-none outline-none"
+                      className="nodrag max-w-52 grow cursor-text break-words font-mono text-xs leading-none outline-none"
                       contentEditable={true}
                       suppressContentEditableWarning={true}
                       dangerouslySetInnerHTML={{ __html: key }}
@@ -69,7 +69,7 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
                       data-handle-id={handleId}
                     ></div>
 
-                    <div className="ml-auto flex items-center gap-0.5">
+                    <div className="ml-auto flex shrink-0 items-center gap-0.5">
                       <button
                         className="flex size-4 cursor-pointer items-center justify-center rounded-md text-violet-300 hover:bg-violet-100 hover:text-violet-700"
                         onClick={() => {
@@ -132,7 +132,7 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
               <span className="leading-none">Send</span>
 
               <Handle
-                id={HandleId.RequestTarget}
+                id={HandleId.RecordSource}
                 type="source"
                 position={Position.Right}
                 className="size-2.5! border-none! bg-violet-700! -z-10 translate-x-3"

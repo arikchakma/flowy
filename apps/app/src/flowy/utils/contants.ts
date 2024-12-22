@@ -22,8 +22,8 @@ export const initialNodes: AppNode[] = [
     id: '4',
     type: 'request',
     position: {
-      x: 158.5748033904688,
-      y: 109,
+      x: 157.97502695662723,
+      y: 83.3038006246936,
     },
     data: {
       method: 'GET',
@@ -78,8 +78,8 @@ export const initialNodes: AppNode[] = [
     id: '9',
     type: 'request',
     position: {
-      x: 600,
-      y: 0,
+      x: 631.8202361171429,
+      y: -66.58759695247245,
     },
     data: {
       method: 'GET',
@@ -90,12 +90,14 @@ export const initialNodes: AppNode[] = [
     id: '10',
     type: 'log',
     position: {
-      x: 843.5095406519356,
-      y: 90.94829020902236,
+      x: 888.6079861232147,
+      y: 49.63290938682613,
     },
     data: {
       label: '5',
     },
+    selected: true,
+    dragging: false,
   },
   {
     id: '11',
@@ -111,93 +113,50 @@ export const initialNodes: AppNode[] = [
   {
     id: '12',
     type: 'string',
-    position: { x: 0, y: 0 },
+    position: {
+      x: 74.29061129718545,
+      y: -183.86926296053397,
+    },
     data: {
       value: 'Hello, World!',
     },
   },
   {
-    id: '13',
-    type: 'number',
-    position: { x: 0, y: 35 },
-    data: {
-      value: 42,
-    },
-  },
-  {
-    id: '14',
-    type: 'boolean',
-    position: { x: 0, y: 70 },
-    data: {
-      value: true,
-    },
-  },
-  {
-    id: '15',
-    type: 'delay',
-    position: { x: 0, y: 105 },
-    data: {
-      duration: 1000,
-    },
-  },
-  {
     id: '16',
     type: 'record',
-    position: { x: 0, y: 300 },
+    position: {
+      x: 350.0867834453622,
+      y: -220.00627841666739,
+    },
     data: {
       values: [
         {
           key: 'Authorization',
-          handleId: nanoid(),
+          handleId: 'q7Rq7c7jSz000hj3vt698',
         },
         {
           key: 'Content-Type',
-          handleId: nanoid(),
+          handleId: 'UrUJtY5hfTaRkvzffAXmh',
         },
         {
           key: 'Accept',
-          handleId: nanoid(),
+          handleId: 'pb6Qy2UXs8Ag3Jr9F8Dwk',
         },
         {
           key: 'User-Agent',
-          handleId: nanoid(),
+          handleId: 'Km2vtkQAzcXTLyrAa3oEx',
         },
         {
           key: 'X-Forwarded-For',
-          handleId: nanoid(),
+          handleId: 'Vg4bcMlA3nPVMKRBSkRtQ',
         },
         {
           key: 'X-Forwarded-Proto',
-          handleId: nanoid(),
+          handleId: 'dY6smsnzdt37nfgLl_sUj',
         },
         {
           key: 'X-Maily-Key',
-          handleId: nanoid(),
-        },
-      ],
-    },
-  },
-  {
-    id: '17',
-    type: 'record',
-    position: { x: 240, y: 300 },
-    data: {
-      values: [
-        {
-          key: 'first_name',
-          handleId: nanoid(),
-        },
-        {
-          key: 'last_name',
-          handleId: nanoid(),
-        },
-        {
-          key: 'email',
-          handleId: nanoid(),
-        },
-        {
-          key: 'phone',
-          handleId: nanoid(),
+          handleId: 'PxcrJW0qph0zvyPvtZcU0',
         },
       ],
     },
@@ -284,5 +243,27 @@ export const initialEdges: Edge[] = [
       stroke: 'var(--color-pink-700)',
       strokeWidth: 2.5,
     },
+  },
+  {
+    id: '16-9',
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '16',
+    sourceHandle: 'RECORD_SOURCE',
+    target: '9',
+    targetHandle: 'REQUEST_HEADERS_TARGET',
+  },
+  {
+    id: '12-16',
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '12',
+    sourceHandle: 'STRING_SOURCE',
+    target: '16',
+    targetHandle: 'q7Rq7c7jSz000hj3vt698',
   },
 ];

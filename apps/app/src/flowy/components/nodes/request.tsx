@@ -1,5 +1,12 @@
-import { Handle, NodeProps, Position, useReactFlow } from '@xyflow/react';
-import { CurlyBracesIcon, Parentheses, WifiIcon } from 'lucide-react';
+import {
+  Handle,
+  NodeProps,
+  Position,
+  useConnection,
+  useHandleConnections,
+  useReactFlow,
+} from '@xyflow/react';
+import { DatabaseIcon, HeadingIcon, Parentheses, WifiIcon } from 'lucide-react';
 import { memo, useRef, useState } from 'react';
 import { cn } from '../../utils/classname';
 import { HandleId, RequestMethod, RequestNodeType } from '@flowy/shared';
@@ -10,8 +17,9 @@ import { flushSync } from 'react-dom';
 function _RequestNode(props: NodeProps<RequestNodeType>) {
   const { selected, id: nodeId, data } = props;
 
-  const { updateNodeData } = useReactFlow<RequestNodeType>();
   const result = useNodeResult(nodeId);
+
+  const { updateNodeData } = useReactFlow<RequestNodeType>();
 
   const { method: _method = 'GET', url: _url = '' } = data;
   const [method, setMethod] = useState<RequestMethod>(_method);
@@ -19,6 +27,20 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
 
   const urlInputRef = useRef<HTMLInputElement>(null);
   const [isUpdatingUrl, setIsUpdatingUrl] = useState(false);
+
+  const isHeadersConnected =
+    useHandleConnections({
+      type: 'target',
+      nodeId,
+      id: HandleId.RequestHeadersTarget,
+    }).length > 0;
+
+  const isBodyConnected =
+    useHandleConnections({
+      type: 'target',
+      nodeId,
+      id: HandleId.RequestBodyTarget,
+    }).length > 0;
 
   return (
     <>
@@ -109,7 +131,7 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
 
         <div className="rounded-xs mt-0.5 bg-white p-2 text-xs shadow">
           <div className="relative flex items-center gap-1">
-            <CurlyBracesIcon className="size-2.5 stroke-[2.5]" />
+            <HeadingIcon className="size-2.5 stroke-[2.5]" />
             <span className="leading-none text-gray-500">Headers</span>
 
             <Handle
@@ -117,12 +139,13 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
               type="target"
               position={Position.Left}
               className="size-2.5! -z-10! -translate-x-3! border-none! bg-pink-700!"
+              isConnectable={!isHeadersConnected}
             />
           </div>
 
           {(method === 'POST' || method === 'PUT') && (
             <div className="relative mt-2 flex items-center gap-1">
-              <CurlyBracesIcon className="size-2.5 stroke-[2.5]" />
+              <DatabaseIcon className="size-2.5 stroke-[2.5]" />
               <span className="leading-none text-gray-500">Body</span>
 
               <Handle
@@ -130,6 +153,7 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
                 type="target"
                 position={Position.Left}
                 className="size-2.5! -z-10! -translate-x-3! border-none! bg-pink-700!"
+                isConnectable={!isBodyConnected}
               />
             </div>
           )}
