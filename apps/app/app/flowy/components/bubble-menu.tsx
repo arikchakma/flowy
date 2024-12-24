@@ -1,6 +1,6 @@
 import { Panel, useReactFlow } from '@xyflow/react';
 import { MaximizeIcon, PlayIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
-import { AppNode } from '@flowy/shared';
+import type { AppNode } from '@flowy/shared';
 import { useFlowyManager } from '@flowy/react';
 
 export function BubbleMenu() {

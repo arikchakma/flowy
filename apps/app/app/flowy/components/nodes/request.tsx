@@ -1,15 +1,18 @@
 import {
   Handle,
-  NodeProps,
+  type NodeProps,
   Position,
-  useConnection,
   useHandleConnections,
   useReactFlow,
 } from '@xyflow/react';
 import { DatabaseIcon, HeadingIcon, Parentheses, WifiIcon } from 'lucide-react';
 import { memo, useRef, useState } from 'react';
 import { cn } from '../../utils/classname';
-import { HandleId, RequestMethod, RequestNodeType } from '@flowy/shared';
+import {
+  HandleId,
+  type RequestMethod,
+  type RequestNodeType,
+} from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 import { SelectNative } from '../select';
 import { flushSync } from 'react-dom';

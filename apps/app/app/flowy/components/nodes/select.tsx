@@ -1,16 +1,8 @@
-import {
-  Handle,
-  Node,
-  NodeProps,
-  Position,
-  useHandleConnections,
-  useReactFlow,
-  useUpdateNodeInternals,
-} from '@xyflow/react';
+import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react';
 import { LinkIcon } from 'lucide-react';
-import { ChangeEvent, memo, useEffect, useState } from 'react';
+import { type ChangeEvent, memo, useEffect, useState } from 'react';
 import { cn } from '../../utils/classname';
-import { HandleId, SelectNodeType } from '@flowy/shared';
+import { HandleId, type SelectNodeType } from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 
 function _SelectNode(props: NodeProps<SelectNodeType>) {

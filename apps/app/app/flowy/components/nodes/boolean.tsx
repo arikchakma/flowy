@@ -1,9 +1,9 @@
-import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react';
+import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react';
 import { ToggleRightIcon } from 'lucide-react';
 import { memo, useState } from 'react';
 import { cn } from '../../utils/classname';
 import { Switch } from '../switch';
-import { BooleanNodeType, HandleId } from '@flowy/shared';
+import { type BooleanNodeType, HandleId } from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 
 function _BooleanNode(props: NodeProps<BooleanNodeType>) {

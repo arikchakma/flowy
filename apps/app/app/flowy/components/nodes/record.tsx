@@ -1,8 +1,8 @@
-import { Handle, NodeProps, Position } from '@xyflow/react';
+import { Handle, type NodeProps, Position } from '@xyflow/react';
 import { PlusIcon, WifiIcon, XIcon } from 'lucide-react';
 import { memo, useState } from 'react';
 import { cn } from '../../utils/classname';
-import { HandleId, RecordNodeType } from '@flowy/shared';
+import { HandleId, type RecordNodeType } from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 import { nanoid } from 'nanoid';
 import { flushSync } from 'react-dom';

@@ -1,20 +1,25 @@
-import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react';
-import { ALargeSmallIcon } from 'lucide-react';
-import { ChangeEvent, memo, useState } from 'react';
+import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react';
+import { ALargeSmallIcon, ArrowUp10Icon } from 'lucide-react';
+import { type ChangeEvent, memo, useState } from 'react';
 import { cn } from '../../utils/classname';
-import { HandleId, StringNodeType } from '@flowy/shared';
+import { HandleId, type NumberNodeType } from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 
-function _StringNode(props: NodeProps<StringNodeType>) {
+function _NumberNode(props: NodeProps<NumberNodeType>) {
   const { selected, id: nodeId, data } = props;
-  const { value: defaultValue = '' } = data;
+  const { value: defaultValue = 0 } = data;
 
   const [value, setValue] = useState(defaultValue);
-  const { updateNodeData } = useReactFlow<StringNodeType>();
+  const { updateNodeData } = useReactFlow<NumberNodeType>();
 
   const handleValueChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-    updateNodeData(nodeId, { value: e.target.value });
+    const newValue = parseInt(e.target.value, 10);
+    if (isNaN(newValue)) {
+      return;
+    }
+
+    setValue(newValue);
+    updateNodeData(nodeId, { value: newValue });
   };
 
   const result = useNodeResult(nodeId);
@@ -31,18 +36,19 @@ function _StringNode(props: NodeProps<StringNodeType>) {
         )}
       >
         <div className="flex h-[30px] shrink-0 items-center justify-center bg-zinc-800 p-2 pl-2.5">
-          <ALargeSmallIcon className="size-3.5 stroke-[2.5]" />
+          <ArrowUp10Icon className="size-3.5 stroke-[2.5]" />
         </div>
         <input
-          placeholder="Enter text"
-          className="w-30 px-2 py-1 font-mono text-sm placeholder:font-sans placeholder:text-zinc-400 focus:outline-none"
+          type="number"
+          placeholder="0"
+          className="hide-number-controls w-14 px-2 py-1 font-mono text-sm tabular-nums placeholder:font-sans placeholder:text-zinc-400 focus:outline-none"
           value={value}
           onChange={handleValueChange}
         />
       </div>
 
       <Handle
-        id={HandleId.StringSource}
+        id={HandleId.NumberSource}
         type="source"
         position={Position.Right}
         className="size-2.5! border-2! bg-zinc-900!"
@@ -51,4 +57,4 @@ function _StringNode(props: NodeProps<StringNodeType>) {
   );
 }
 
-export const StringNode = memo(_StringNode);
+export const NumberNode = memo(_NumberNode);

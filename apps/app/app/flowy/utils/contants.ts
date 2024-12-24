@@ -1,6 +1,5 @@
-import { AppNode, HandleId } from '@flowy/shared';
-import { Edge } from '@xyflow/react';
-import { nanoid } from 'nanoid';
+import { type AppNode, HandleId } from '@flowy/shared';
+import { type Edge } from '@xyflow/react';
 
 export const REQUEST_STROKE_STYLE = {
   stroke: 'var(--color-pink-700)',

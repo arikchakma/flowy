@@ -1,8 +1,8 @@
-import { Handle, Node, NodeProps, Position } from '@xyflow/react';
+import { Handle, type NodeProps, Position } from '@xyflow/react';
 import { TargetIcon } from 'lucide-react';
 import { memo } from 'react';
 import { cn } from '../../utils/classname';
-import { HandleId, TriggerNodeType } from '@flowy/shared';
+import { HandleId, type TriggerNodeType } from '@flowy/shared';
 
 function _TriggerNode(props: NodeProps<TriggerNodeType>) {
   const { selected, id: nodeId } = props;

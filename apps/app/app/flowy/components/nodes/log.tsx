@@ -1,8 +1,8 @@
-import { Handle, NodeProps, Position } from '@xyflow/react';
+import { Handle, type NodeProps, Position } from '@xyflow/react';
 import { Parentheses } from 'lucide-react';
 import { memo } from 'react';
 import { cn } from '../../utils/classname';
-import { HandleId, LogNodeType } from '@flowy/shared';
+import { HandleId, type LogNodeType } from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 
 function _LogNode(props: NodeProps<LogNodeType>) {

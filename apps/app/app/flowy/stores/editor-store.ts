@@ -2,10 +2,10 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
-  Edge,
-  OnNodesChange,
-  OnEdgesChange,
-  OnConnect,
+  type Edge,
+  type OnNodesChange,
+  type OnEdgesChange,
+  type OnConnect,
 } from '@xyflow/react';
 import {
   initialEdges,
@@ -14,7 +14,7 @@ import {
 } from '../utils/contants';
 import { createWithEqualityFn } from 'zustand/traditional';
 import { shallow } from 'zustand/shallow';
-import { AppNode, HandleId } from '@flowy/shared';
+import { type AppNode, HandleId } from '@flowy/shared';
 
 export type EditorState = {
   nodes: AppNode[];

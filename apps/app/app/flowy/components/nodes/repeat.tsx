@@ -1,8 +1,12 @@
-import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react';
+import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react';
 import { ArrowUp10Icon, InfinityIcon } from 'lucide-react';
 import { memo, useRef, useState } from 'react';
 import { cn } from '../../utils/classname';
-import { HandleId, LoopRepeatType, RepeatNodeType } from '@flowy/shared';
+import {
+  HandleId,
+  type LoopRepeatType,
+  type RepeatNodeType,
+} from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 
 function _RepeatNode(props: NodeProps<RepeatNodeType>) {

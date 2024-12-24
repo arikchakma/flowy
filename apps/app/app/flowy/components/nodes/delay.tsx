@@ -1,8 +1,8 @@
-import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react';
+import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react';
 import { LoaderIcon } from 'lucide-react';
-import { ChangeEvent, memo, useState } from 'react';
+import { type ChangeEvent, memo, useState } from 'react';
 import { cn } from '../../utils/classname';
-import { DelayNodeType, HandleId } from '@flowy/shared';
+import { type DelayNodeType, HandleId } from '@flowy/shared';
 import { useNodeResult } from '@flowy/react';
 
 function _DelayNode(props: NodeProps<DelayNodeType>) {
