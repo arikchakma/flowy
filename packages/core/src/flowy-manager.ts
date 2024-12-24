@@ -1,13 +1,16 @@
 import { getProperty } from 'dot-prop';
-import { runPromisesInBatchSequentially, HandleId, wait } from '@flowy/shared';
+import { HandleId, wait } from '@flowy/shared';
 import type {
   AppNode,
   RequestNodeType,
   SelectNodeType,
   TriggerNodeType,
   Edge,
-  BatchPromiseInput,
   LogNodeType,
+  RecordNodeType,
+  StringNodeType,
+  NumberNodeType,
+  BooleanNodeType,
 } from '@flowy/shared';
 import { Subscribable } from './subscribable';
 import { FlowyError } from '@flowy/shared';
@@ -33,6 +36,8 @@ type EdgeConnection = {
   targetHandle: string;
 };
 
+export const CONSTANT_NODE_TYPES = ['string', 'number', 'boolean'];
+
 export class FlowyManager extends Subscribable<Listener> {
   #results: FlowyResults;
   #connections: Map<string, EdgeConnection[]>;
@@ -57,15 +62,36 @@ export class FlowyManager extends Subscribable<Listener> {
     this.nodes = nodes;
     this.edges = edges;
 
-    const trigger = nodes.find((node) => node.type === 'trigger');
-    if (!trigger) {
-      throw new FlowyError('Trigger node not found');
-    }
-
-    await this.#handleNode(trigger);
+    const flows = await this.#flows();
+    await this.#promise(flows);
   }
 
-  async #handleNode(node: AppNode): Promise<void> {
+  async #execute(node: AppNode) {
+    const nodes = await this.#handleNode(node);
+    this.#promise(nodes);
+  }
+
+  async #flows() {
+    // 1. get the flow nodes and add them to the flows
+    // flow nodes are nodes which do not have any incoming edges
+    const flows = this.nodes.filter((node) => {
+      return !this.edges.some((edge) => edge.target === node.id);
+    });
+
+    const constantNodes = flows.filter((node) => {
+      if (!node.type) {
+        return false;
+      }
+
+      return CONSTANT_NODE_TYPES.includes(node.type);
+    });
+
+    // 3. run and save the results of the constant nodes
+    await this.#promise(constantNodes);
+    return flows.filter((node) => !constantNodes.includes(node));
+  }
+
+  async #handleNode(node: AppNode): Promise<AppNode[]> {
     const { type } = node;
     if (!type) {
       throw new FlowyError('Node type not found');
@@ -77,21 +103,6 @@ export class FlowyManager extends Subscribable<Listener> {
     }
 
     throw new FlowyError(`Node type "${type}" not found`);
-  }
-
-  async #handleConnections(connections: EdgeConnection[]) {
-    const promises: BatchPromiseInput<any> = [];
-    for (const connection of connections) {
-      const { targetId } = connection;
-      const node = this.nodes.find((node) => node.id === targetId);
-      if (!node) {
-        continue;
-      }
-
-      promises.push(() => this.#handleNode(node));
-    }
-
-    await runPromisesInBatchSequentially(promises, 5);
   }
 
   #setResult(nodeId: string, result: Partial<StepResult>) {
@@ -158,7 +169,7 @@ export class FlowyManager extends Subscribable<Listener> {
       HandleId.TriggerSource
     );
 
-    await this.#handleConnections(connections);
+    return this.#getNodes(connections.map((connection) => connection.targetId));
   }
 
   async log(node: LogNodeType) {
@@ -182,12 +193,18 @@ export class FlowyManager extends Subscribable<Listener> {
     }
 
     this.#setResult(node.id, { status: 'finished' });
+    return [];
   }
 
   async request(node: RequestNodeType) {
     this.#setResult(node.id, { status: 'running' });
 
     const nodeId = node.id;
+
+    const headers = await this.#headers(node);
+    console.log('-'.repeat(20));
+    console.log('Headers: ', headers);
+    console.log('-'.repeat(20));
 
     const successes = this.#getHandleConnections(
       nodeId,
@@ -214,11 +231,71 @@ export class FlowyManager extends Subscribable<Listener> {
       error: result.error,
     });
 
-    if (result.data) {
-      await this.#handleConnections(successes);
-    } else if (result.error) {
-      await this.#handleConnections(failures);
+    const connections = result.data ? successes : failures;
+    return this.#getNodes(connections.map((connection) => connection.targetId));
+  }
+
+  async #promise(nodes: AppNode[]) {
+    return Promise.all(
+      nodes.map(async (node) => {
+        return await this.#execute(node);
+      })
+    );
+  }
+
+  async #headers(node: RequestNodeType) {
+    const connection = this.#getHandleConnections(
+      node.id,
+      'target',
+      HandleId.RequestHeadersTarget
+    )?.[0];
+
+    if (!connection) {
+      return {};
     }
+
+    const record = this.nodes.find(
+      (node) => node.id === connection.sourceId
+    ) as RecordNodeType;
+    if (!record) {
+      return {};
+    }
+
+    await this.record(record);
+    const result = this.#results.get(record.id);
+    if (!result) {
+      return {};
+    }
+
+    return result.data;
+  }
+
+  async record(node: RecordNodeType) {
+    this.#setResult(node.id, { status: 'running' });
+    const { values } = node.data;
+
+    const data: Record<string, unknown> = {};
+    const connections = this.#getHandleConnections(node.id, 'target');
+    for (const value of values) {
+      const { key, handleId } = value;
+      const connection = connections.find(
+        (connection) => connection.targetHandle === handleId
+      );
+
+      if (!connection) {
+        continue;
+      }
+
+      const result = this.#results.get(connection.sourceId);
+      if (!result) {
+        continue;
+      }
+
+      data[key] = result.data;
+    }
+
+    this.#setResult(node.id, { status: 'finished', data });
+    return [];
   }
 
   async select(node: SelectNodeType) {
@@ -256,7 +333,11 @@ export class FlowyManager extends Subscribable<Listener> {
       error: undefined,
     });
 
-    await this.#handleConnections(children);
+    return this.#getNodes(children.map((connection) => connection.targetId));
+  }
+
+  #getNodes(nodeIds: string[]) {
+    return this.nodes.filter((node) => nodeIds.includes(node.id));
   }
 
   async delay(node: DelayNodeType) {
@@ -291,7 +372,31 @@ export class FlowyManager extends Subscribable<Listener> {
       HandleId.DelaySource
     );
 
-    await this.#handleConnections(children);
+    return this.#getNodes(children.map((connection) => connection.targetId));
+  }
+
+  async string(node: StringNodeType) {
+    this.#setResult(node.id, { status: 'running' });
+    const { value } = node.data;
+    this.#setResult(node.id, { status: 'finished', data: value });
+
+    return [];
+  }
+
+  async number(node: NumberNodeType) {
+    this.#setResult(node.id, { status: 'running' });
+    const { value } = node.data;
+    this.#setResult(node.id, { status: 'finished', data: value });
+
+    return [];
+  }
+
+  async boolean(node: BooleanNodeType) {
+    this.#setResult(node.id, { status: 'running' });
+    const { value } = node.data;
+    this.#setResult(node.id, { status: 'finished', data: value });
+
+    return [];
   }
 
   #notify() {
