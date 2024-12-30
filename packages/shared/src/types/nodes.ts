@@ -112,6 +112,13 @@ export type RecordNodeType = Node<
   'record'
 >;
 
+export type VariableNodeType = Node<
+  {
+    name: string;
+  },
+  'variable'
+>;
+
 export type AppNode =
   | RequestNodeType
   | LogNodeType
@@ -122,7 +129,8 @@ export type AppNode =
   | NumberNodeType
   | BooleanNodeType
   | DelayNodeType
-  | RecordNodeType;
+  | RecordNodeType
+  | VariableNodeType;
 
 export enum HandleId {
   TriggerSource = 'TRIGGER_SOURCE',
@@ -150,4 +158,7 @@ export enum HandleId {
   DelayTarget = 'DELAY_TARGET',
 
   RecordSource = 'RECORD_SOURCE',
+
+  VariableTarget = 'VARIABLE_TARGET',
+  VariableSource = 'VARIABLE_SOURCE',
 }

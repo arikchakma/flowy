@@ -9,6 +9,7 @@ import {
 
 import type { Route } from './+types/root';
 import stylesheet from './app.css?url';
+import { Loader2Icon } from 'lucide-react';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'stylesheet', href: stylesheet },
@@ -61,6 +62,14 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
           <code>{stack}</code>
         </pre>
       )}
+    </main>
+  );
+}
+
+export function HydrateFallback() {
+  return (
+    <main className="container mx-auto flex min-h-screen items-center justify-center">
+      <Loader2Icon className="stroke-3 size-10 animate-spin text-gray-500" />
     </main>
   );
 }

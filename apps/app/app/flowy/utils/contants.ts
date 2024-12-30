@@ -113,19 +113,30 @@ export const initialNodes: AppNode[] = [
     id: '12',
     type: 'string',
     position: {
-      x: 74.29061129718545,
-      y: -183.86926296053397,
+      x: -47.28404724773202,
+      y: -184.57495077711977,
     },
     data: {
       value: 'Hello, World!',
     },
   },
   {
+    id: '18',
+    type: 'variable',
+    position: {
+      x: 437.2141693077034,
+      y: 20.346457956350008,
+    },
+    data: {
+      name: 'variable',
+    },
+  },
+  {
     id: '16',
     type: 'record',
     position: {
-      x: 350.0867834453622,
-      y: -220.00627841666739,
+      x: 157.97502695662723,
+      y: -220.71196623325315,
     },
     data: {
       values: [
@@ -244,15 +255,15 @@ export const initialEdges: Edge[] = [
     },
   },
   {
-    id: '16-9',
+    id: '16-18',
     style: {
       stroke: 'var(--color-zinc-900)',
       strokeWidth: 2.5,
     },
     source: '16',
-    sourceHandle: 'RECORD_SOURCE',
-    target: '9',
-    targetHandle: 'REQUEST_HEADERS_TARGET',
+    sourceHandle: HandleId.RecordSource,
+    target: '18',
+    targetHandle: HandleId.VariableTarget,
   },
   {
     id: '12-16',
@@ -261,8 +272,15 @@ export const initialEdges: Edge[] = [
       strokeWidth: 2.5,
     },
     source: '12',
-    sourceHandle: 'STRING_SOURCE',
+    sourceHandle: HandleId.StringSource,
     target: '16',
     targetHandle: 'q7Rq7c7jSz000hj3vt698',
+  },
+  {
+    id: '18-9',
+    source: '18',
+    target: '9',
+    sourceHandle: HandleId.VariableSource,
+    targetHandle: HandleId.RequestHeadersTarget,
   },
 ];

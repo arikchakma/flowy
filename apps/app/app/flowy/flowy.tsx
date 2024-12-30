@@ -21,6 +21,7 @@ import { BooleanNode } from './components/nodes/boolean';
 import { DelayNode } from './components/nodes/delay';
 import { flowyManager } from './utils/flowy-manager';
 import { RecordNode } from './components/nodes/record';
+import { VariableNode } from './components/nodes/variable';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -33,6 +34,7 @@ const nodeTypes = {
   boolean: BooleanNode,
   delay: DelayNode,
   record: RecordNode,
+  variable: VariableNode,
 };
 
 const edgeTypes = {};
@@ -61,6 +63,8 @@ function _Flowy() {
       onEdgesChange: state.onEdgesChange,
       onConnect: state.onConnect,
     }));
+
+  console.log({ nodes, edges });
 
   return (
     <div className="h-screen w-screen">
