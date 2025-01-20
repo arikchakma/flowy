@@ -1,19 +1,41 @@
 {
   "name": "flowy",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format:write": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,md}\""
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc"
+  },
+  "dependencies": {
+    "@radix-ui/react-switch": "^1.1.2",
+    "@react-router/node": "^7.1.3",
+    "@react-router/serve": "^7.1.3",
+    "@tailwindcss/vite": "4.0.0-beta.9",
+    "@xyflow/react": "^12.4.1",
+    "clsx": "^2.1.1",
+    "dot-prop": "^9.0.0",
+    "isbot": "^5.1.17",
+    "lucide-react": "^0.473.0",
+    "nanoid": "^5.0.9",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.1.3",
+    "tailwind-merge": "^2.6.0",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
-    "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.9",
-    "tsconfig": "workspace:*",
-    "tsup": "^8.3.5",
-    "turbo": "^2.3.3"
-  },
-  "packageManager": "pnpm@9.1.1"
+    "@react-router/dev": "^7.1.3",
+    "@types/node": "^20",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
+    "postcss": "^8.4.49",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.10",
+    "tailwindcss": "4.0.0-beta.9",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
 }
