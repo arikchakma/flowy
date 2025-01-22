@@ -2,7 +2,7 @@ import {
   Handle,
   type NodeProps,
   Position,
-  useHandleConnections,
+  useNodeConnections,
   useReactFlow,
 } from '@xyflow/react';
 import { DatabaseIcon, HeadingIcon, Parentheses, WifiIcon } from 'lucide-react';
@@ -73,17 +73,17 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
   const [isUpdatingUrl, setIsUpdatingUrl] = useState(false);
 
   const isHeadersConnected =
-    useHandleConnections({
-      type: 'target',
-      nodeId,
-      id: HandleId.RequestHeadersTarget,
+    useNodeConnections({
+      id: nodeId,
+      handleType: 'target',
+      handleId: HandleId.RequestHeadersTarget,
     }).length > 0;
 
   const isBodyConnected =
-    useHandleConnections({
-      type: 'target',
-      nodeId,
-      id: HandleId.RequestBodyTarget,
+    useNodeConnections({
+      id: nodeId,
+      handleType: 'target',
+      handleId: HandleId.RequestBodyTarget,
     }).length > 0;
 
   return (
