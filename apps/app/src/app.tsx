@@ -1,4 +1,4 @@
-import { Flowy } from './flowy/flowy';
+import { Flowy } from './flowy';
 
 export function App() {
   return <Flowy />;
