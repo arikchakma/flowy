@@ -58,6 +58,8 @@ function _Flowy() {
       onConnect: state.onConnect,
     }));
 
+  console.log({ nodes, edges });
+
   return (
     <div className="h-screen w-screen">
       <ReactFlow
