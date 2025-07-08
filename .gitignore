@@ -4,3 +4,7 @@
 # React Router
 /.react-router/
 /build/
+
+# Chrome DevTools
+/public/.well-known/
+.vercel/

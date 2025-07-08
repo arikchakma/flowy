@@ -18,10 +18,8 @@ import { StringNode } from './nodes/string';
 import { NumberNode } from './nodes/number';
 import { BooleanNode } from './nodes/boolean';
 import { DelayNode } from './nodes/delay';
-import { flowyManager } from '~/lib/flowy-manager';
 import { RecordNode } from './nodes/record';
 import { VariableNode } from './nodes/variable';
-import { FlowyManagerProvider } from '~/lib/flowy-manager-provider';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -98,10 +96,8 @@ function _Flowy() {
 
 export function Flowy() {
   return (
-    <FlowyManagerProvider manager={flowyManager}>
-      <ReactFlowProvider>
-        <_Flowy />
-      </ReactFlowProvider>
-    </FlowyManagerProvider>
+    <ReactFlowProvider>
+      <_Flowy />
+    </ReactFlowProvider>
   );
 }

@@ -10,7 +10,6 @@ import { memo, useRef, useState } from 'react';
 import { SelectNative } from '../select';
 import { flushSync } from 'react-dom';
 import { cn } from '~/utils/classname';
-import { useNodeResult } from '~/lib/use-node-result';
 import { HandleId } from '~/types/handle-id';
 import type { Node } from '@xyflow/react';
 
@@ -61,8 +60,6 @@ export type RequestNodeType = Node<
 function _RequestNode(props: NodeProps<RequestNodeType>) {
   const { selected, id: nodeId, data } = props;
 
-  const result = useNodeResult(nodeId);
-
   const { updateNodeData } = useReactFlow<RequestNodeType>();
 
   const { method: _method = 'GET', url: _url = '' } = data;
@@ -92,9 +89,7 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
         className={cn(
           'max-w-52 min-w-52 rounded-xl bg-pink-200 p-1 inset-ring-1 inset-ring-pink-300/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-pink-300',
-          result?.status === 'running' &&
-            'animate-running-node outline-2 outline-offset-1 outline-pink-300'
+          selected && 'outline-1 outline-offset-1 outline-pink-300'
         )}
       >
         <div className="flex items-center justify-between px-1 py-2 pt-1.5">

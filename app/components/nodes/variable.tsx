@@ -2,7 +2,6 @@ import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react';
 import { ALargeSmallIcon, WifiIcon } from 'lucide-react';
 import { type ChangeEvent, memo, useState } from 'react';
 import { cn } from '~/utils/classname';
-import { useNodeResult } from '~/lib/use-node-result';
 import { HandleId } from '~/types/handle-id';
 import type { Node } from '@xyflow/react';
 
@@ -25,17 +24,13 @@ function _VariableNode(props: NodeProps<VariableNodeType>) {
     updateNodeData(nodeId, { name: e.target.value });
   };
 
-  const result = useNodeResult(nodeId);
-
   return (
     <>
       <div
         className={cn(
           'flex items-stretch overflow-hidden rounded-full bg-zinc-900 text-white inset-ring-1 shadow-sm inset-ring-zinc-200/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-zinc-400',
-          result?.status === 'running' &&
-            'animate-running-node outline-2 outline-offset-1 outline-zinc-400'
+          selected && 'outline-1 outline-offset-1 outline-zinc-400'
         )}
       >
         <input
