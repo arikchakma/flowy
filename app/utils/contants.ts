@@ -27,7 +27,7 @@ export const initialNodes: AppNode[] = [
     },
     data: {
       method: 'GET',
-      url: 'https://arikko.dev/v1/v1-health',
+      url: 'https://jsonplaceholder.typicode.com/todos/1',
     },
   },
   {
@@ -60,7 +60,7 @@ export const initialNodes: AppNode[] = [
       y: 163.57104506926493,
     },
     data: {
-      path: 'data.success',
+      path: 'title',
     },
   },
   {
@@ -83,7 +83,7 @@ export const initialNodes: AppNode[] = [
     },
     data: {
       method: 'GET',
-      url: 'https://arikko.dev/v1/v1-health',
+      url: 'https://jsonplaceholder.typicode.com/todos/1',
     },
   },
   {
