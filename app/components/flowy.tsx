@@ -4,6 +4,7 @@ import {
   BackgroundVariant,
   ReactFlow,
   ReactFlowProvider,
+  type NodeTypes,
 } from '@xyflow/react';
 
 import { TriggerNode } from './nodes/trigger';
@@ -72,7 +73,7 @@ function _Flowy() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        nodeTypes={nodeTypes}
+        nodeTypes={nodeTypes as NodeTypes}
         edgeTypes={edgeTypes}
         proOptions={proOptions}
         // Zoom and pan settings
