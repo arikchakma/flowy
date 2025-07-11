@@ -7,9 +7,9 @@ import { HandleId } from '~/types/handle-id';
 import type { Node } from '@xyflow/react';
 import { useNodeResult } from '~/lib/use-node-result';
 
-export type TriggerNodeType = Node<{}, 'trigger'>;
+export type StartNodeType = Node<{}, 'start'>;
 
-function _TriggerNode(props: NodeProps<TriggerNodeType>) {
+function _StartNode(props: NodeProps<StartNodeType>) {
   const { selected, id: nodeId } = props;
 
   const result = useNodeResult(nodeId);
@@ -27,11 +27,11 @@ function _TriggerNode(props: NodeProps<TriggerNodeType>) {
         )}
       >
         <TargetIcon className="size-3.5 stroke-[2.5]" />
-        <span className="text-sm leading-none font-medium">Trigger</span>
+        <span className="text-sm leading-none font-medium">Start</span>
       </div>
 
       <Handle
-        id={HandleId.TriggerSource}
+        id={HandleId.StartSource}
         type="source"
         position={Position.Right}
         className="size-2.5! border-2! bg-zinc-900!"
@@ -40,4 +40,4 @@ function _TriggerNode(props: NodeProps<TriggerNodeType>) {
   );
 }
 
-export const TriggerNode = memo(_TriggerNode);
+export const StartNode = memo(_StartNode);

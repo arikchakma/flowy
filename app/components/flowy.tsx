@@ -7,7 +7,7 @@ import {
   type NodeTypes,
 } from '@xyflow/react';
 
-import { TriggerNode } from './nodes/trigger';
+import { StartNode } from './nodes/start';
 import { RequestNode } from './nodes/request';
 import { LogNode } from './nodes/log';
 import { BubbleMenu } from './bubble-menu';
@@ -25,7 +25,7 @@ import { WorkflowEngineProvider } from '~/lib/workflow-engine-provider';
 import { workflowEngine } from '~/lib/workflow-engine';
 
 const nodeTypes = {
-  trigger: TriggerNode,
+  start: StartNode,
   request: RequestNode,
   log: LogNode,
   select: SelectNode,

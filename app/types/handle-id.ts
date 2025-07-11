@@ -1,5 +1,5 @@
 export enum HandleId {
-  TriggerSource = 'TRIGGER_SOURCE',
+  StartSource = 'START_SOURCE',
   LogTarget = 'LOG_TARGET',
 
   RequestSuccessSource = 'REQUEST_SUCCESS_SOURCE',

@@ -9,7 +9,7 @@ export const REQUEST_STROKE_STYLE = {
 export const initialNodes: AppNode[] = [
   {
     id: '3',
-    type: 'trigger',
+    type: 'start',
     position: {
       x: -251.17179630629016,
       y: 99.53789184538306,
@@ -423,10 +423,10 @@ export const initialEdges: Edge[] = [
       strokeWidth: 2.5,
     },
     source: '3',
-    sourceHandle: 'TRIGGER_SOURCE',
+    sourceHandle: 'START_SOURCE',
     target: '22',
     targetHandle: 'DELAY_TARGET',
-    id: 'xy-edge__3TRIGGER_SOURCE-22DELAY_TARGET',
+    id: 'xy-edge__3START_SOURCE-22DELAY_TARGET',
   },
   {
     style: {
@@ -434,10 +434,10 @@ export const initialEdges: Edge[] = [
       strokeWidth: 2.5,
     },
     source: '3',
-    sourceHandle: 'TRIGGER_SOURCE',
+    sourceHandle: 'START_SOURCE',
     target: '21',
     targetHandle: 'DELAY_TARGET',
-    id: 'xy-edge__3TRIGGER_SOURCE-21DELAY_TARGET',
+    id: 'xy-edge__3START_SOURCE-21DELAY_TARGET',
   },
   {
     style: {
@@ -445,10 +445,10 @@ export const initialEdges: Edge[] = [
       strokeWidth: 2.5,
     },
     source: '3',
-    sourceHandle: 'TRIGGER_SOURCE',
+    sourceHandle: 'START_SOURCE',
     target: '20',
     targetHandle: 'DELAY_TARGET',
-    id: 'xy-edge__3TRIGGER_SOURCE-20DELAY_TARGET',
+    id: 'xy-edge__3START_SOURCE-20DELAY_TARGET',
   },
   {
     style: {
@@ -456,10 +456,10 @@ export const initialEdges: Edge[] = [
       strokeWidth: 2.5,
     },
     source: '3',
-    sourceHandle: 'TRIGGER_SOURCE',
+    sourceHandle: 'START_SOURCE',
     target: '19',
     targetHandle: 'DELAY_TARGET',
-    id: 'xy-edge__3TRIGGER_SOURCE-19DELAY_TARGET',
+    id: 'xy-edge__3START_SOURCE-19DELAY_TARGET',
   },
   {
     style: {

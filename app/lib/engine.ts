@@ -52,8 +52,8 @@ export async function runWorkflow(nodes: AppNode[], edges: Edge[]) {
 
     let result = input;
     switch (node.type) {
-      case 'trigger':
-        console.log(`TRIGGER[${id}]:`, input);
+      case 'start':
+        console.log(`START[${id}]:`, input);
         break;
       case 'request':
         console.log(`REQUEST[${id}]:`, node.data.url);

@@ -101,7 +101,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
 
     this.#visit(id);
     switch (node.type) {
-      case 'trigger':
+      case 'start':
         break;
       case 'request':
         await this.#request(node, options);
