@@ -72,9 +72,6 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
   const [isUpdatingUrl, setIsUpdatingUrl] = useState(false);
 
   const result = useNodeResult(nodeId);
-  console.log('-'.repeat(20));
-  console.log('~ RequestNode result:', result);
-  console.log('-'.repeat(20));
 
   const isHeadersConnected =
     useNodeConnections({

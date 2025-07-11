@@ -98,7 +98,6 @@ export class WorkflowEngine extends Subscribable<Listener> {
     this.#visitedCount.set(id, visitedCount + 1);
 
     let result = input;
-
     switch (node.type) {
       case 'trigger':
         break;
@@ -109,6 +108,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
         );
         break;
       case 'log':
+        console.log(`LOG[${id}]:`, result);
         break;
       case 'select':
         result = getProperty(result, node.data.path);
@@ -137,6 +137,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
       return;
     }
 
+    result = this.#results.get(id);
     for (const child of children) {
       const degree = (this.#inDegree.get(child) || 0) - 1;
       this.#inDegree.set(child, degree);
