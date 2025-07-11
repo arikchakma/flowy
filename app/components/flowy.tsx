@@ -21,6 +21,8 @@ import { BooleanNode } from './nodes/boolean';
 import { DelayNode } from './nodes/delay';
 import { RecordNode } from './nodes/record';
 import { VariableNode } from './nodes/variable';
+import { WorkflowEngineProvider } from '~/lib/workflow-engine-provider';
+import { workflowEngine } from '~/lib/workflow-engine';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -97,8 +99,10 @@ function _Flowy() {
 
 export function Flowy() {
   return (
-    <ReactFlowProvider>
-      <_Flowy />
-    </ReactFlowProvider>
+    <WorkflowEngineProvider engine={workflowEngine}>
+      <ReactFlowProvider>
+        <_Flowy />
+      </ReactFlowProvider>
+    </WorkflowEngineProvider>
   );
 }

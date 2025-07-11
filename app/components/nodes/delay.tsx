@@ -10,6 +10,7 @@ import { type ChangeEvent, memo, useState } from 'react';
 import { NodeId } from '../node-id';
 import { HandleId } from '~/types/handle-id';
 import { cn } from '~/utils/classname';
+import { useNodeResult } from '~/lib/use-node-result';
 
 export type DelayNodeType = Node<
   {
@@ -35,6 +36,8 @@ function _DelayNode(props: NodeProps<DelayNodeType>) {
     updateNodeData(nodeId, { duration: newValue });
   };
 
+  const result = useNodeResult(nodeId);
+
   return (
     <>
       <NodeId nodeId={nodeId} />
@@ -42,7 +45,9 @@ function _DelayNode(props: NodeProps<DelayNodeType>) {
         className={cn(
           'flex items-stretch overflow-hidden rounded-full bg-zinc-900 text-white shadow-sm inset-ring-1 inset-ring-zinc-200/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-zinc-400'
+          selected && 'outline-1 outline-offset-1 outline-zinc-400',
+          result?.status === 'running' &&
+            'animate-running-node outline-2 outline-offset-1 outline-zinc-400'
         )}
       >
         <div className="flex h-[30px] shrink-0 items-center justify-center bg-zinc-800 p-2 pl-2.5">

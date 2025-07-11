@@ -2,8 +2,10 @@ import { Panel, useReactFlow } from '@xyflow/react';
 import { MaximizeIcon, PlayIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
 import { runWorkflow } from '~/lib/engine';
 import type { AppNode } from '~/types/nodes';
+import { useWorkflowEngine } from '~/lib/workflow-engine-provider';
 
 export function BubbleMenu() {
+  const engine = useWorkflowEngine();
   const { zoomIn, zoomOut, fitView, getNodes, getEdges } =
     useReactFlow<AppNode>();
 
@@ -32,7 +34,7 @@ export function BubbleMenu() {
         <button
           className="flex min-h-8 cursor-pointer items-center gap-1 rounded-lg bg-zinc-900 px-2 py-1.5 leading-none text-white hover:bg-zinc-800"
           onClick={async () => {
-            await runWorkflow(getNodes(), getEdges());
+            await engine.start(getNodes(), getEdges());
           }}
         >
           <PlayIcon className="size-3.5 shrink-0 fill-current stroke-[2.5]" />
