@@ -1,4 +1,4 @@
-import { Handle, type NodeProps, Position } from '@xyflow/react';
+import { Handle, type Node, type NodeProps, Position } from '@xyflow/react';
 import { PlusIcon, WifiIcon, XIcon } from 'lucide-react';
 import { memo, useState } from 'react';
 import { nanoid } from 'nanoid';
@@ -7,7 +7,8 @@ import { flushSync } from 'react-dom';
 import { cn } from '~/utils/classname';
 import { NodeId } from '../node-id';
 import { HandleId } from '~/types/handle-id';
-import type { Node } from '@xyflow/react';
+
+import { useNodeResult } from '~/lib/use-node-result';
 
 export type RecordNodeType = Node<
   {
@@ -30,6 +31,8 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
   const [values, setValues] =
     useState<RecordNodeType['data']['values']>(initialValues);
 
+  const result = useNodeResult(nodeId);
+
   return (
     <>
       <NodeId nodeId={nodeId} />
@@ -37,7 +40,9 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
         className={cn(
           'min-w-52 rounded-xl bg-violet-200 p-1 inset-ring-1 inset-ring-violet-300/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-violet-300'
+          selected && 'outline-1 outline-offset-1 outline-violet-300',
+          result?.status === 'running' &&
+            'animate-running-node outline-2 outline-offset-1 outline-violet-300'
         )}
       >
         <div className="flex items-center justify-between px-1 py-2 pt-1.5">

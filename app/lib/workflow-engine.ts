@@ -108,6 +108,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
         );
         break;
       case 'log':
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         console.log(`LOG[${id}]:`, result);
         break;
       case 'select':

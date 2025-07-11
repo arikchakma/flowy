@@ -1,10 +1,17 @@
-import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react';
-import { ALargeSmallIcon, WifiIcon } from 'lucide-react';
+import {
+  Handle,
+  type Node,
+  type NodeProps,
+  Position,
+  useReactFlow,
+} from '@xyflow/react';
+import { WifiIcon } from 'lucide-react';
 import { type ChangeEvent, memo, useState } from 'react';
 import { cn } from '~/utils/classname';
 import { NodeId } from '../node-id';
 import { HandleId } from '~/types/handle-id';
-import type { Node } from '@xyflow/react';
+
+import { useNodeResult } from '~/lib/use-node-result';
 
 export type VariableNodeType = Node<
   {
@@ -20,6 +27,8 @@ function _VariableNode(props: NodeProps<VariableNodeType>) {
   const [name, setName] = useState(defaultName);
   const { updateNodeData } = useReactFlow<VariableNodeType>();
 
+  const result = useNodeResult(nodeId);
+
   const handleValueChange = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
     updateNodeData(nodeId, { name: e.target.value });
@@ -32,7 +41,9 @@ function _VariableNode(props: NodeProps<VariableNodeType>) {
         className={cn(
           'flex items-stretch overflow-hidden rounded-full bg-zinc-900 text-white shadow-sm inset-ring-1 inset-ring-zinc-200/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-zinc-400'
+          selected && 'outline-1 outline-offset-1 outline-zinc-400',
+          result?.status === 'running' &&
+            'animate-running-node outline-2 outline-offset-1 outline-zinc-400'
         )}
       >
         <input
