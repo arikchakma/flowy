@@ -3,6 +3,18 @@ import { Subscribable } from './subscribable';
 import type { Edge } from '@xyflow/react';
 import PQueue from 'p-queue';
 import { getProperty } from 'dot-prop';
+import { HandleId } from '~/types/handle-id';
+import type { RequestNodeType } from '~/components/nodes/request';
+import type { SelectNodeType } from '~/components/nodes/select';
+import type { RecordNodeType } from '~/components/nodes/record';
+import type { VariableNodeType } from '~/components/nodes/variable';
+import type { DelayNodeType } from '~/components/nodes/delay';
+import type { StringNodeType } from '~/components/nodes/string';
+import type { NumberNodeType } from '~/components/nodes/number';
+
+type NodeOptions = {
+  prev?: string;
+};
 
 type Status = 'idle' | 'running' | 'paused' | 'finished';
 
@@ -41,7 +53,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
     this.#nodes = [];
     this.#edges = [];
 
-    this.#queue = new PQueue({ concurrency: 4 });
+    this.#queue = new PQueue({ concurrency: 100 });
   }
 
   build() {
@@ -67,11 +79,6 @@ export class WorkflowEngine extends Subscribable<Listener> {
     this.#edges = edges;
     this.build();
 
-    console.log('~ start', {
-      inDegree: this.#inDegree,
-      graph: this.#graph,
-    });
-
     const startNodes = Array.from(this.#inDegree.entries())
       .filter(([_, degree]) => degree === 0)
       .map(([id]) => id);
@@ -84,61 +91,51 @@ export class WorkflowEngine extends Subscribable<Listener> {
     this.#notify();
   }
 
-  async run(id: string, input: any) {
+  async run(id: string, options: NodeOptions | null) {
     const node = this.#nodes.find((node) => node.id === id);
     if (!node) {
       throw new Error(`Node ${id} not found`);
     }
 
-    this.#setResult(id, {
-      status: 'running',
-    });
-
-    const visitedCount = this.#visitedCount.get(id) || 0;
-    this.#visitedCount.set(id, visitedCount + 1);
-
-    let result = input;
+    this.#visit(id);
     switch (node.type) {
       case 'trigger':
         break;
       case 'request':
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        result = await fetch(node.data.url, { method: node.data.method }).then(
-          (r) => r.json()
-        );
+        await this.#request(node, options);
         break;
       case 'log':
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        console.log(`LOG[${id}]:`, result);
+        this.#log(id, options);
         break;
       case 'select':
-        result = getProperty(result, node.data.path);
+        this.#select(node, options);
         break;
       case 'delay':
-        await new Promise((resolve) => setTimeout(resolve, node.data.duration));
+        await this.#delay(node, options);
         break;
       case 'string':
-        result = node.data.value;
+        this.#string(node);
         break;
       case 'number':
-        result = node.data.value;
+        this.#number(node);
+        break;
+      case 'record':
+        this.#record(node, options);
+        break;
+      case 'variable':
+        this.#variable(node, options);
         break;
       default:
         console.warn(`Unknown node type ${node.type}`);
         break;
     }
 
-    this.#setResult(id, {
-      status: 'finished',
-      data: result,
-    });
-
-    const children = this.#graph.get(id);
+    const children = this.#children(node);
+    console.log('CHILDREN[', node.id, ']:', children);
     if (!children) {
       return;
     }
 
-    result = this.#results.get(id);
     for (const child of children) {
       const degree = (this.#inDegree.get(child) || 0) - 1;
       this.#inDegree.set(child, degree);
@@ -146,9 +143,206 @@ export class WorkflowEngine extends Subscribable<Listener> {
       // if all of it's parents are done, we can run it
       // otherwise we wait for the parents to finish
       if (degree === 0) {
-        this.#queue.add(() => this.run(child, result));
+        this.#queue.add(() => this.run(child, { prev: id }));
       }
     }
+  }
+
+  #children(node: AppNode) {
+    // for the request node, there can be either
+    // success or error children so we need to check
+    // the result of the request node
+    if (node.type !== 'request') {
+      return this.#graph.get(node.id);
+    }
+
+    const result = this.#results.get(node.id);
+    if (!result) {
+      return [];
+    }
+
+    const success = this.#edges.filter(
+      (edge) =>
+        edge.source === node.id &&
+        edge.sourceHandle === HandleId.RequestSuccessSource
+    );
+    const error = this.#edges.filter(
+      (edge) =>
+        edge.source === node.id &&
+        edge.sourceHandle === HandleId.RequestFailureSource
+    );
+
+    let children: string[] = [];
+    if (result.data) {
+      children = success.map((edge) => edge.target);
+    } else if (result.error) {
+      children = error.map((edge) => edge.target);
+    }
+
+    return children;
+  }
+
+  #sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  #string(node: StringNodeType) {
+    const nodeId = node.id;
+
+    this.#setResult(nodeId, {
+      status: 'running',
+    });
+
+    this.#setResult(nodeId, {
+      status: 'finished',
+      data: node.data.value,
+    });
+  }
+
+  #number(node: NumberNodeType) {
+    const nodeId = node.id;
+
+    this.#setResult(nodeId, {
+      status: 'running',
+    });
+
+    this.#setResult(nodeId, {
+      status: 'finished',
+      data: node.data.value,
+    });
+  }
+
+  async #delay(node: DelayNodeType, options: NodeOptions | null) {
+    const nodeId = node.id;
+
+    this.#setResult(nodeId, {
+      status: 'running',
+    });
+
+    await this.#sleep(node.data.duration);
+
+    this.#setResult(nodeId, {
+      status: 'finished',
+      data: null,
+    });
+  }
+
+  #variable(node: VariableNodeType, options: NodeOptions | null) {
+    const nodeId = node.id;
+    const prev = options?.prev;
+    const prevResult = prev ? this.#results.get(prev) : undefined;
+
+    this.#setResult(nodeId, {
+      status: 'running',
+    });
+
+    this.#setResult(nodeId, {
+      status: 'finished',
+      data: prevResult?.data,
+    });
+  }
+
+  #record(node: RecordNodeType, options: NodeOptions | null) {
+    const nodeId = node.id;
+
+    const record: Record<string, unknown> = {};
+    this.#setResult(nodeId, {
+      status: 'running',
+    });
+
+    for (const value of node.data.values) {
+      const source = this.#edges.find(
+        (edge) => edge.targetHandle === value.handleId
+      );
+      if (!source) {
+        continue;
+      }
+
+      const sourceNode = this.#nodes.find((node) => node.id === source.source);
+      if (!sourceNode) {
+        continue;
+      }
+
+      record[value.key] = this.#results.get(sourceNode.id)?.data;
+    }
+
+    this.#setResult(nodeId, {
+      status: 'finished',
+      data: record,
+    });
+  }
+
+  async #request(node: RequestNodeType, options: NodeOptions | null) {
+    const nodeId = node.id;
+    this.#setResult(nodeId, {
+      status: 'running',
+    });
+
+    try {
+      const headers = this.#headers(nodeId);
+      console.log(`HEADERS[${nodeId}]:`, headers);
+
+      const result = await fetch(node.data.url, {
+        method: node.data.method,
+      }).then((r) => r.json());
+
+      this.#setResult(nodeId, {
+        status: 'finished',
+        data: result,
+      });
+    } catch (error) {
+      this.#setResult(nodeId, {
+        status: 'finished',
+        error: error instanceof Error ? error : undefined,
+      });
+    }
+  }
+
+  #select(node: SelectNodeType, options: NodeOptions | null) {
+    const nodeId = node.id;
+    const prev = options?.prev;
+    const prevResult = prev ? this.#results.get(prev) : undefined;
+
+    this.#setResult(nodeId, {
+      status: 'running',
+    });
+
+    const result = getProperty(prevResult, node.data.path);
+    this.#setResult(nodeId, {
+      status: 'finished',
+      data: result,
+    });
+  }
+
+  #log(nodeId: string, options: NodeOptions | null) {
+    const prev = options?.prev;
+
+    this.#setResult(nodeId, {
+      status: 'running',
+    });
+
+    const prevResult = prev ? this.#results.get(prev) : undefined;
+    console.log(`LOG[${nodeId}]:`, prevResult?.data, prevResult?.error);
+
+    this.#setResult(nodeId, {
+      status: 'finished',
+      data: prevResult,
+    });
+  }
+
+  #visit(nodeId: string) {
+    const visitedCount = (this.#visitedCount.get(nodeId) || 0) + 1;
+    this.#visitedCount.set(nodeId, visitedCount);
+    return visitedCount;
+  }
+
+  #headers(nodeId: string) {
+    const headersNodeId = this.#edges.find(
+      (edge) =>
+        edge.targetHandle === HandleId.RequestHeadersTarget &&
+        edge.target === nodeId
+    )?.source;
+    return headersNodeId ? this.#results.get(headersNodeId)?.data : undefined;
   }
 
   #setResult(nodeId: string, result: Partial<StepResult>) {

@@ -10,7 +10,7 @@ export function NodeId(props: NodeIdProps) {
   }
 
   return (
-    <div className="absolute -top-0 flex aspect-square size-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl border bg-black p-1 font-mono text-[11px] leading-none font-medium text-white">
+    <div className="pointer-events-none absolute -top-0 z-10 flex size-4.5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl border bg-black font-mono text-[8px] leading-none font-semibold text-white">
       {nodeId}
     </div>
   );

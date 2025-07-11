@@ -60,7 +60,7 @@ export const initialNodes: AppNode[] = [
       y: 163.57104506926493,
     },
     data: {
-      path: 'title',
+      path: 'data.title',
     },
   },
   {
@@ -119,6 +119,17 @@ export const initialNodes: AppNode[] = [
     },
     data: {
       value: 'Hello, World!',
+    },
+  },
+  {
+    id: '13',
+    type: 'string',
+    position: {
+      x: -47.28404724773202,
+      y: -150.57495077711977,
+    },
+    data: {
+      value: 'Howdy!',
     },
   },
   {
@@ -283,5 +294,12 @@ export const initialEdges: Edge[] = [
     target: '9',
     sourceHandle: HandleId.VariableSource,
     targetHandle: HandleId.RequestHeadersTarget,
+  },
+  {
+    id: '13-16',
+    source: '13',
+    target: '16',
+    sourceHandle: HandleId.StringSource,
+    targetHandle: 'UrUJtY5hfTaRkvzffAXmh',
   },
 ];
