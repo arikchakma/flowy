@@ -27,3 +27,7 @@
     -moz-appearance: textfield;
   }
 }
+
+@utility shadow-border {
+  box-shadow: 0 0 0 1px var(--tw-shadow-color, #00000014);
+}

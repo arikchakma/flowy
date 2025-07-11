@@ -16,7 +16,7 @@ type NodeOptions = {
   prev?: string;
 };
 
-type Status = 'idle' | 'running' | 'paused' | 'finished';
+type Status = 'idle' | 'running' | 'paused' | 'success' | 'error';
 
 export type StepResult<R = unknown, E = Error> = {
   status: Status;
@@ -97,6 +97,8 @@ export class WorkflowEngine extends Subscribable<Listener> {
       throw new Error(`Node ${id} not found`);
     }
 
+    console.log(`RUN[${id}]:`, node.type);
+
     this.#visit(id);
     switch (node.type) {
       case 'trigger':
@@ -131,20 +133,88 @@ export class WorkflowEngine extends Subscribable<Listener> {
     }
 
     const children = this.#children(node);
-    console.log('CHILDREN[', node.id, ']:', children);
     if (!children) {
       return;
     }
 
     for (const child of children) {
-      const degree = (this.#inDegree.get(child) || 0) - 1;
-      this.#inDegree.set(child, degree);
-
-      // if all of it's parents are done, we can run it
-      // otherwise we wait for the parents to finish
-      if (degree === 0) {
-        this.#queue.add(() => this.run(child, { prev: id }));
+      const dependencies = this.#dependencies(child);
+      if (dependencies.length !== 0) {
+        continue;
       }
+
+      this.#queue.add(() => this.run(child, { prev: id }));
+    }
+  }
+
+  /**
+   * Returns the dependencies of a node.
+   * So that we can determine if a node is ready to run.
+   *
+   * Example:
+   * If the `Request` has a `record` node, then we should wait for the `record` node to finish.
+   * Also for the `Record` node, we should wait for all of it's dependencies to finish.
+   * Then we can run the `Request` node.
+   *
+   * @param node - The node to get the dependencies of.
+   * @returns The dependencies of the node.
+   */
+  #dependencies(nodeId: string) {
+    const node = this.#nodes.find((node) => node.id === nodeId);
+    if (!node) {
+      return [];
+    }
+
+    // for a request node, header's source is the node id
+    // is a dependency for the request node
+    switch (node.type) {
+      case 'request':
+        const headersNodeId = this.#edges.find(
+          (edge) =>
+            edge.targetHandle === HandleId.RequestHeadersTarget &&
+            edge.target === node.id
+        )?.source;
+
+        if (!headersNodeId) {
+          return [];
+        }
+
+        const result = this.#results.get(headersNodeId);
+        if (result?.status === 'success' || result?.status === 'error') {
+          return [];
+        }
+        return [headersNodeId];
+
+      case 'record':
+        const dependencies: string[] = [];
+
+        for (const value of node.data.values) {
+          const source = this.#edges.find(
+            (edge) => edge.targetHandle === value.handleId
+          );
+          if (!source) {
+            continue;
+          }
+
+          const sourceNode = this.#nodes.find(
+            (node) => node.id === source.source
+          );
+          if (!sourceNode) {
+            continue;
+          }
+
+          const result = this.#results.get(sourceNode.id);
+          if (result?.status === 'success' || result?.status === 'error') {
+            continue;
+          }
+
+          dependencies.push(sourceNode.id);
+        }
+
+        return dependencies;
+
+      default:
+        return [];
     }
   }
 
@@ -152,34 +222,34 @@ export class WorkflowEngine extends Subscribable<Listener> {
     // for the request node, there can be either
     // success or error children so we need to check
     // the result of the request node
-    if (node.type !== 'request') {
-      return this.#graph.get(node.id);
+    switch (node.type) {
+      case 'request':
+        const result = this.#results.get(node.id);
+        if (!result) {
+          return [];
+        }
+
+        const success = this.#edges.filter(
+          (edge) =>
+            edge.source === node.id &&
+            edge.sourceHandle === HandleId.RequestSuccessSource
+        );
+        const error = this.#edges.filter(
+          (edge) =>
+            edge.source === node.id &&
+            edge.sourceHandle === HandleId.RequestFailureSource
+        );
+
+        let children: string[] = [];
+        if (result.data) {
+          children = success.map((edge) => edge.target);
+        } else if (result.error) {
+          children = error.map((edge) => edge.target);
+        }
+        return children;
+      default:
+        return this.#graph.get(node.id);
     }
-
-    const result = this.#results.get(node.id);
-    if (!result) {
-      return [];
-    }
-
-    const success = this.#edges.filter(
-      (edge) =>
-        edge.source === node.id &&
-        edge.sourceHandle === HandleId.RequestSuccessSource
-    );
-    const error = this.#edges.filter(
-      (edge) =>
-        edge.source === node.id &&
-        edge.sourceHandle === HandleId.RequestFailureSource
-    );
-
-    let children: string[] = [];
-    if (result.data) {
-      children = success.map((edge) => edge.target);
-    } else if (result.error) {
-      children = error.map((edge) => edge.target);
-    }
-
-    return children;
   }
 
   #sleep(ms: number) {
@@ -194,7 +264,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
     });
 
     this.#setResult(nodeId, {
-      status: 'finished',
+      status: 'success',
       data: node.data.value,
     });
   }
@@ -207,7 +277,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
     });
 
     this.#setResult(nodeId, {
-      status: 'finished',
+      status: 'success',
       data: node.data.value,
     });
   }
@@ -222,7 +292,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
     await this.#sleep(node.data.duration);
 
     this.#setResult(nodeId, {
-      status: 'finished',
+      status: 'success',
       data: null,
     });
   }
@@ -237,7 +307,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
     });
 
     this.#setResult(nodeId, {
-      status: 'finished',
+      status: 'success',
       data: prevResult?.data,
     });
   }
@@ -267,7 +337,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
     }
 
     this.#setResult(nodeId, {
-      status: 'finished',
+      status: 'success',
       data: record,
     });
   }
@@ -281,18 +351,17 @@ export class WorkflowEngine extends Subscribable<Listener> {
     try {
       const headers = this.#headers(nodeId);
       console.log(`HEADERS[${nodeId}]:`, headers);
-
       const result = await fetch(node.data.url, {
         method: node.data.method,
       }).then((r) => r.json());
 
       this.#setResult(nodeId, {
-        status: 'finished',
+        status: 'success',
         data: result,
       });
     } catch (error) {
       this.#setResult(nodeId, {
-        status: 'finished',
+        status: 'error',
         error: error instanceof Error ? error : undefined,
       });
     }
@@ -309,7 +378,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
 
     const result = getProperty(prevResult, node.data.path);
     this.#setResult(nodeId, {
-      status: 'finished',
+      status: 'success',
       data: result,
     });
   }
@@ -325,7 +394,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
     console.log(`LOG[${nodeId}]:`, prevResult?.data, prevResult?.error);
 
     this.#setResult(nodeId, {
-      status: 'finished',
+      status: 'success',
       data: prevResult,
     });
   }
