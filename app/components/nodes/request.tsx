@@ -12,6 +12,7 @@ import { flushSync } from 'react-dom';
 import { cn } from '~/utils/classname';
 import { HandleId } from '~/types/handle-id';
 import type { Node } from '@xyflow/react';
+import { NodeId } from '../node-id';
 
 export const allowedRequestMethods = ['GET', 'POST', 'PUT', 'DELETE'] as const;
 export type RequestMethod = (typeof allowedRequestMethods)[number];
@@ -85,6 +86,7 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
 
   return (
     <>
+      <NodeId nodeId={nodeId} />
       <div
         className={cn(
           'max-w-52 min-w-52 rounded-xl bg-pink-200 p-1 inset-ring-1 inset-ring-pink-300/20 transition-shadow',

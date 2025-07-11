@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid';
 import { flushSync } from 'react-dom';
 
 import { cn } from '~/utils/classname';
+import { NodeId } from '../node-id';
 import { HandleId } from '~/types/handle-id';
 import type { Node } from '@xyflow/react';
 
@@ -31,6 +32,7 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
 
   return (
     <>
+      <NodeId nodeId={nodeId} />
       <div
         className={cn(
           'min-w-52 rounded-xl bg-violet-200 p-1 inset-ring-1 inset-ring-violet-300/20 transition-shadow',

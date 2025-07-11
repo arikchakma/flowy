@@ -36,10 +36,6 @@ export async function runWorkflow(nodes: AppNode[], edges: Edge[]) {
   const { graph, inDegree } = buildGraph(nodes, edges);
   const nodeMap = Object.fromEntries(nodes.map((n) => [n.id, n]));
 
-  console.log('GRAPH:', graph);
-  console.log('IN DEGREE:', inDegree);
-  console.log('NODE MAP:', nodeMap);
-
   const queue = new PQueue({ concurrency: 4 });
   const visitedCount: Record<string, number> = {};
 
@@ -84,17 +80,17 @@ export async function runWorkflow(nodes: AppNode[], edges: Edge[]) {
 
     for (const child of graph[id]) {
       inDegree[child]--;
+
+      // so if all of it's parents are done, we can run it
+      // otherwise we wait for the parents to finish
       if (inDegree[child] === 0) {
         queue.add(() => runNode(child, result));
       }
     }
   };
 
-  Object.keys(inDegree).forEach((id) => {
-    if (inDegree[id] === 0) {
-      queue.add(() => runNode(id, null));
-    }
-  });
+  const startNodes = Object.keys(inDegree).filter((id) => inDegree[id] === 0);
+  queue.addAll(startNodes.map((nodeId) => () => runNode(nodeId, null)));
 
   await queue.onIdle();
   console.log('✅ Workflow complete');
