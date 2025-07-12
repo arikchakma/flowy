@@ -5,6 +5,7 @@ import {
   ReactFlow,
   ReactFlowProvider,
   type NodeTypes,
+  type XYPosition,
 } from '@xyflow/react';
 
 import { StartNode } from './nodes/start';
@@ -23,6 +24,131 @@ import { RecordNode } from './nodes/record';
 import { VariableNode } from './nodes/variable';
 import { WorkflowEngineProvider } from '~/lib/workflow-engine-provider';
 import { workflowEngine } from '~/lib/workflow-engine';
+import { useCallback, useRef, type DragEvent } from 'react';
+import { nanoid } from 'nanoid';
+import type { AppNode, NodeType } from '~/types/nodes';
+
+function newId() {
+  const isDev = import.meta.env.DEV;
+  if (isDev) {
+    const nodes = useEditorStore.getState().nodes;
+    const sorted = nodes.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+    const lastId = parseInt(sorted[sorted.length - 1]?.id);
+    if (!lastId) {
+      return '1';
+    }
+
+    return (lastId + 1).toString();
+  }
+
+  return nanoid();
+}
+
+function createNode(type: NodeType, position: XYPosition) {
+  const id = newId();
+  switch (type) {
+    case 'start':
+      return {
+        id,
+        data: {},
+        position,
+        type,
+      };
+    case 'request':
+      return {
+        id,
+        data: {
+          method: 'GET' as const,
+          url: 'https://arikko.dev',
+          headers: {},
+          body: {},
+        },
+        position,
+        type,
+      };
+    case 'log':
+      return {
+        id,
+        data: {},
+        position,
+        type,
+      };
+    case 'select':
+      return {
+        id,
+        data: {
+          path: '',
+        },
+        position,
+        type,
+      };
+    case 'repeat':
+      return {
+        id,
+        data: {
+          repeat: 'indefinite' as const,
+        },
+        position,
+        type,
+      };
+    case 'string':
+      return {
+        id,
+        data: {
+          value: '',
+        },
+        position,
+        type,
+      };
+    case 'number':
+      return {
+        id,
+        data: {
+          value: 0,
+        },
+        position,
+        type,
+      };
+    case 'boolean':
+      return {
+        id,
+        data: {
+          value: false,
+        },
+        position,
+        type,
+      };
+    case 'delay':
+      return {
+        id,
+        data: {
+          duration: 1000,
+        },
+        position,
+        type,
+      };
+    case 'record':
+      return {
+        id,
+        data: {
+          values: [],
+        },
+        position,
+        type,
+      };
+    case 'variable':
+      return {
+        id,
+        data: {
+          name: '',
+        },
+        position,
+        type,
+      };
+    default:
+      return null;
+  }
+}
 
 const nodeTypes = {
   start: StartNode,
@@ -56,44 +182,81 @@ const defaultEdgeOptions = {
 };
 
 function _Flowy() {
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect } =
-    useEditorStore((state) => ({
-      nodes: state.nodes,
-      edges: state.edges,
-      onNodesChange: state.onNodesChange,
-      onEdgesChange: state.onEdgesChange,
-      onConnect: state.onConnect,
-    }));
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const {
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    reactFlow,
+    setReactFlow,
+    setNodes,
+  } = useEditorStore();
+
+  const onDrop = useCallback(
+    (event: DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      const type = event.dataTransfer.getData('application/reactflow');
+      if (typeof type === 'undefined' || !type) {
+        return;
+      }
+
+      const position = reactFlow?.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      if (!position) {
+        return;
+      }
+
+      const newNode = createNode(type as NodeType, position);
+      if (!newNode) {
+        return;
+      }
+
+      const newNodes: AppNode[] = [...nodes, newNode];
+      setNodes(newNodes);
+    },
+    [reactFlow, nodes, setNodes]
+  );
+  const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
 
   console.log({ nodes, edges });
 
   return (
-    <div className="h-screen w-screen">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        nodeTypes={nodeTypes as NodeTypes}
-        edgeTypes={edgeTypes}
-        proOptions={proOptions}
-        // Zoom and pan settings
-        zoomOnScroll={false}
-        panActivationKeyCode="Space"
-        panOnScroll={true}
-        panOnDrag={false}
-        // Connection line style
-        connectionLineStyle={connectionLineStyle}
-        defaultEdgeOptions={defaultEdgeOptions}
-        // Background settings
-        fitView={true}
-      >
-        <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-        <BubbleMenu />
-        <ViewportLogger />
-      </ReactFlow>
-    </div>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+      nodeTypes={nodeTypes as NodeTypes}
+      edgeTypes={edgeTypes}
+      proOptions={proOptions}
+      // Zoom and pan settings
+      zoomOnScroll={false}
+      panActivationKeyCode="Space"
+      panOnScroll={true}
+      panOnDrag={false}
+      // Connection line style
+      connectionLineStyle={connectionLineStyle}
+      defaultEdgeOptions={defaultEdgeOptions}
+      // Background settings
+      fitView={true}
+      onInit={setReactFlow}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      ref={reactFlowWrapper}
+    >
+      <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+      <BubbleMenu />
+      <ViewportLogger />
+    </ReactFlow>
   );
 }
 

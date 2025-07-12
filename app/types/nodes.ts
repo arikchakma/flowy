@@ -22,3 +22,4 @@ export type AppNode =
   | DelayNodeType
   | RecordNodeType
   | VariableNodeType;
+export type NodeType = AppNode['type'];
