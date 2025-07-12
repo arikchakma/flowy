@@ -16,7 +16,7 @@ type NodeOptions = {
   prev?: string;
 };
 
-type Status = 'idle' | 'running' | 'paused' | 'success' | 'error';
+export type Status = 'idle' | 'running' | 'paused' | 'success' | 'error';
 
 export type StepResult<R = unknown, E = Error> = {
   status: Status;
@@ -33,6 +33,7 @@ type VisitedCount = Map<string, number>;
 
 export class WorkflowEngine extends Subscribable<Listener> {
   #results: WorkflowResults = new Map();
+  #status: Status = 'idle';
 
   #graph: Graph = new Map();
   #inDegree: InDegree = new Map();
@@ -49,6 +50,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
     this.#graph = new Map();
     this.#inDegree = new Map();
     this.#visitedCount = new Map();
+    this.#status = 'idle';
 
     this.#nodes = [];
     this.#edges = [];
@@ -79,6 +81,9 @@ export class WorkflowEngine extends Subscribable<Listener> {
     this.#edges = edges;
     this.build();
 
+    this.#status = 'running';
+    this.#notify();
+
     const startNodes = Array.from(this.#inDegree.entries())
       .filter(([_, degree]) => degree === 0)
       .map(([id]) => id);
@@ -88,6 +93,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
     );
 
     await this.#queue.onIdle();
+    this.#status = 'success';
     this.#notify();
   }
 
@@ -515,6 +521,10 @@ export class WorkflowEngine extends Subscribable<Listener> {
 
   getAll(): Map<string, StepResult> {
     return this.#results;
+  }
+
+  get status() {
+    return this.#status;
   }
 }
 

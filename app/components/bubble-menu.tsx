@@ -1,12 +1,21 @@
 import { Panel, useReactFlow } from '@xyflow/react';
-import { MaximizeIcon, PlayIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
+import {
+  Loader2Icon,
+  MaximizeIcon,
+  PlayIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
+} from 'lucide-react';
 import type { AppNode } from '~/types/nodes';
 import { useWorkflowEngine } from '~/lib/workflow-engine-provider';
+import { useWorkflowStatus } from '~/lib/use-workflow-status';
 
 export function BubbleMenu() {
   const engine = useWorkflowEngine();
   const { zoomIn, zoomOut, fitView, getNodes, getEdges } =
     useReactFlow<AppNode>();
+  const status = useWorkflowStatus();
+  const isRunning = status === 'running';
 
   return (
     <Panel position="bottom-center">
@@ -31,13 +40,18 @@ export function BubbleMenu() {
         </button>
 
         <button
-          className="flex min-h-7 cursor-pointer items-center gap-1 rounded-full bg-zinc-900 px-2.5 py-1.5 leading-none text-white hover:bg-zinc-800"
+          className="flex min-h-7 cursor-pointer items-center gap-1 rounded-full bg-zinc-900 px-2.5 py-1.5 text-sm leading-none font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
           onClick={async () => {
             await engine.start(getNodes(), getEdges());
           }}
+          disabled={isRunning}
         >
-          <PlayIcon className="size-3.5 shrink-0 fill-current stroke-[2.5]" />
-          Run
+          {isRunning ? (
+            <Loader2Icon className="size-3.5 shrink-0 animate-spin stroke-[2.5]" />
+          ) : (
+            <PlayIcon className="size-3.5 shrink-0 fill-current stroke-[2.5]" />
+          )}
+          {isRunning ? 'Running' : 'Run'}
         </button>
       </div>
     </Panel>
