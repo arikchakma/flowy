@@ -369,11 +369,13 @@ export class WorkflowEngine extends Subscribable<Listener> {
         (edge) => edge.targetHandle === value.handleId
       );
       if (!source) {
+        record[value.key] = undefined;
         continue;
       }
 
       const sourceNode = this.#nodes.find((node) => node.id === source.source);
       if (!sourceNode) {
+        record[value.key] = undefined;
         continue;
       }
 
