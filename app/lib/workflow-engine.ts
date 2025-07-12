@@ -432,7 +432,9 @@ export class WorkflowEngine extends Subscribable<Listener> {
       status: 'running',
     });
 
-    const result = getProperty(prevResult, node.data.path);
+    const data =
+      prevResult?.status === 'success' ? prevResult?.data : prevResult?.error;
+    const result = getProperty(data, node.data.path);
     this.#setResult(nodeId, {
       status: 'success',
       data: result,

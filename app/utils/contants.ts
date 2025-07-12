@@ -82,7 +82,7 @@ export const initialNodes: AppNode[] = [
       y: 168.57104506926493,
     },
     data: {
-      path: 'data.body.title',
+      path: 'body.success',
     },
     measured: {
       width: 152,
