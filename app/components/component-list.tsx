@@ -10,6 +10,7 @@ import {
   ToggleRightIcon,
   WifiIcon,
 } from 'lucide-react';
+import { cn } from '~/utils/classname';
 
 const draggableComponentList = [
   {
@@ -56,6 +57,7 @@ const draggableComponentList = [
     type: 'repeat',
     title: 'Repeat',
     icon: <InfinityIcon className="h-4 w-4" />,
+    disabled: true,
   },
   {
     type: 'delay',
@@ -90,9 +92,13 @@ export function ComponentList() {
         {draggableComponentList.map((component) => (
           <div
             key={component.type}
-            className="dndnode flex cursor-grab items-center justify-start gap-2 rounded-xl border border-zinc-200 p-2 px-2.5 text-sm text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
+            className={cn(
+              'dndnode flex cursor-grab items-center justify-start gap-2 rounded-xl border border-zinc-200 p-2 px-2.5 text-sm text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900',
+              component.disabled && 'cursor-not-allowed opacity-50'
+            )}
             onDragStart={(event) => handleOnDragStart(event, component.type)}
-            draggable
+            draggable={!component.disabled}
+            aria-disabled={component.disabled}
           >
             {component.icon}
             {component.title}
