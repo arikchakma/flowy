@@ -1,6 +1,5 @@
 import { Panel, useReactFlow } from '@xyflow/react';
 import { MaximizeIcon, PlayIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
-import { runWorkflow } from '~/lib/engine';
 import type { AppNode } from '~/types/nodes';
 import { useWorkflowEngine } from '~/lib/workflow-engine-provider';
 
