@@ -9,14 +9,20 @@ export const REQUEST_STROKE_STYLE = {
 export const initialNodes: AppNode[] = [
   {
     id: '3',
-    type: 'trigger',
+    type: 'start',
     position: {
-      x: 0,
-      y: 200,
+      x: -186.17179630629016,
+      y: 154.53789184538306,
     },
     data: {
       label: '3',
     },
+    measured: {
+      width: 79,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
   },
   {
     id: '4',
@@ -27,7 +33,11 @@ export const initialNodes: AppNode[] = [
     },
     data: {
       method: 'GET',
-      url: 'https://arikko.dev/v1/v1-health',
+      url: 'https://arikko.dev/api/v1-health.json',
+    },
+    measured: {
+      width: 208,
+      height: 190,
     },
   },
   {
@@ -35,44 +45,68 @@ export const initialNodes: AppNode[] = [
     type: 'log',
     position: {
       x: 467.93950326627834,
-      y: 198.72277354470052,
+      y: 203.72277354470052,
     },
     data: {
       label: '5',
     },
+    measured: {
+      width: 64,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
   },
   {
     id: '6',
     type: 'log',
     position: {
       x: 493.12839178319683,
-      y: 236.2100694822811,
+      y: 241.2100694822811,
     },
     data: {
       label: '5',
     },
+    measured: {
+      width: 64,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
   },
   {
     id: '7',
     type: 'select',
     position: {
       x: 444.28632788917616,
-      y: 163.57104506926493,
+      y: 168.57104506926493,
     },
     data: {
-      path: 'data.success',
+      path: 'data.body.title',
     },
+    measured: {
+      width: 152,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
   },
   {
     id: '8',
     type: 'log',
     position: {
       x: 658.0002688961907,
-      y: 162.86113127964492,
+      y: 167.86113127964492,
     },
     data: {
       label: '5',
     },
+    measured: {
+      width: 64,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
   },
   {
     id: '9',
@@ -83,8 +117,13 @@ export const initialNodes: AppNode[] = [
     },
     data: {
       method: 'GET',
-      url: 'https://arikko.dev/v1/v1-health',
+      url: 'https://arikko.dev/api/v1-health.json',
     },
+    measured: {
+      width: 208,
+      height: 190,
+    },
+    selected: false,
   },
   {
     id: '10',
@@ -96,30 +135,63 @@ export const initialNodes: AppNode[] = [
     data: {
       label: '5',
     },
-    selected: true,
+    selected: false,
     dragging: false,
+    measured: {
+      width: 64,
+      height: 30,
+    },
   },
   {
     id: '11',
     type: 'delay',
     position: {
       x: 444.5094158058936,
-      y: 128.4544266353185,
+      y: 133.4544266353185,
     },
     data: {
       duration: 1000,
     },
+    measured: {
+      width: 111,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
   },
   {
     id: '12',
     type: 'string',
     position: {
-      x: -47.28404724773202,
+      x: -147.28404724773202,
       y: -184.57495077711977,
     },
     data: {
       value: 'Hello, World!',
     },
+    measured: {
+      width: 152,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
+  },
+  {
+    id: '13',
+    type: 'string',
+    position: {
+      x: -147.28404724773202,
+      y: -150.57495077711977,
+    },
+    data: {
+      value: 'Howdy!',
+    },
+    measured: {
+      width: 152,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
   },
   {
     id: '18',
@@ -131,12 +203,16 @@ export const initialNodes: AppNode[] = [
     data: {
       name: 'variable',
     },
+    measured: {
+      width: 152,
+      height: 30,
+    },
   },
   {
     id: '16',
     type: 'record',
     position: {
-      x: 157.97502695662723,
+      x: 57.97502695662723,
       y: -220.71196623325315,
     },
     data: {
@@ -171,23 +247,90 @@ export const initialNodes: AppNode[] = [
         },
       ],
     },
+    measured: {
+      width: 208,
+      height: 276,
+    },
+    selected: false,
+    dragging: false,
+  },
+  {
+    id: '19',
+    type: 'delay',
+    position: {
+      x: -22.78404724773202,
+      y: 219.9544266353185,
+    },
+    data: {
+      duration: 2000,
+    },
+    measured: {
+      width: 111,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
+  },
+  {
+    id: '20',
+    type: 'delay',
+    position: {
+      x: -22.78404724773202,
+      y: 186.9544266353185,
+    },
+    data: {
+      duration: 3000,
+    },
+    measured: {
+      width: 111,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
+  },
+  {
+    id: '21',
+    type: 'delay',
+    position: {
+      x: -22.78404724773202,
+      y: 153.9544266353185,
+    },
+    data: {
+      duration: 4000,
+    },
+    measured: {
+      width: 111,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
+  },
+  {
+    id: '22',
+    type: 'delay',
+    position: {
+      x: 299.3513673739703,
+      y: 20.247755669789846,
+    },
+    data: {
+      duration: 10000,
+    },
+    measured: {
+      width: 111,
+      height: 30,
+    },
+    selected: false,
+    dragging: false,
   },
 ];
 
 export const initialEdges: Edge[] = [
   {
-    id: '3-4',
-    source: '3',
-    target: '4',
-    sourceHandle: HandleId.TriggerSource,
-    targetHandle: HandleId.RequestTarget,
-  },
-  {
     id: '4-5',
     source: '4',
     target: '5',
-    sourceHandle: HandleId.RequestSuccessSource,
-    targetHandle: HandleId.LogTarget,
+    sourceHandle: 'REQUEST_SUCCESS_SOURCE',
+    targetHandle: 'LOG_TARGET',
     style: {
       stroke: 'var(--color-pink-700)',
       strokeWidth: 2.5,
@@ -197,8 +340,8 @@ export const initialEdges: Edge[] = [
     id: '4-6',
     source: '4',
     target: '6',
-    sourceHandle: HandleId.RequestFailureSource,
-    targetHandle: HandleId.LogTarget,
+    sourceHandle: 'REQUEST_FAILURE_SOURCE',
+    targetHandle: 'LOG_TARGET',
     style: {
       stroke: 'var(--color-pink-700)',
       strokeWidth: 2.5,
@@ -208,8 +351,8 @@ export const initialEdges: Edge[] = [
     id: '4-7',
     source: '4',
     target: '7',
-    sourceHandle: HandleId.RequestSuccessSource,
-    targetHandle: HandleId.SelectTarget,
+    sourceHandle: 'REQUEST_SUCCESS_SOURCE',
+    targetHandle: 'SELECT_TARGET',
     style: {
       stroke: 'var(--color-pink-700)',
       strokeWidth: 2.5,
@@ -219,15 +362,15 @@ export const initialEdges: Edge[] = [
     id: '7-8',
     source: '7',
     target: '8',
-    sourceHandle: HandleId.SelectSource,
-    targetHandle: HandleId.LogTarget,
+    sourceHandle: 'SELECT_SOURCE',
+    targetHandle: 'LOG_TARGET',
   },
   {
     id: '9-10',
     source: '9',
     target: '10',
-    sourceHandle: HandleId.RequestSuccessSource,
-    targetHandle: HandleId.LogTarget,
+    sourceHandle: 'REQUEST_SUCCESS_SOURCE',
+    targetHandle: 'LOG_TARGET',
     style: {
       stroke: 'var(--color-pink-700)',
       strokeWidth: 2.5,
@@ -237,8 +380,8 @@ export const initialEdges: Edge[] = [
     id: '11-9',
     source: '11',
     target: '9',
-    sourceHandle: HandleId.DelaySource,
-    targetHandle: HandleId.RequestTarget,
+    sourceHandle: 'DELAY_SOURCE',
+    targetHandle: 'REQUEST_TARGET',
     style: {
       stroke: 'var(--color-zinc-900)',
       strokeWidth: 2.5,
@@ -248,23 +391,12 @@ export const initialEdges: Edge[] = [
     id: '4-11',
     source: '4',
     target: '11',
-    sourceHandle: HandleId.RequestSuccessSource,
-    targetHandle: HandleId.DelayTarget,
+    sourceHandle: 'REQUEST_SUCCESS_SOURCE',
+    targetHandle: 'DELAY_TARGET',
     style: {
       stroke: 'var(--color-pink-700)',
       strokeWidth: 2.5,
     },
-  },
-  {
-    id: '16-18',
-    style: {
-      stroke: 'var(--color-zinc-900)',
-      strokeWidth: 2.5,
-    },
-    source: '16',
-    sourceHandle: HandleId.RecordSource,
-    target: '18',
-    targetHandle: HandleId.VariableTarget,
   },
   {
     id: '12-16',
@@ -273,7 +405,7 @@ export const initialEdges: Edge[] = [
       strokeWidth: 2.5,
     },
     source: '12',
-    sourceHandle: HandleId.StringSource,
+    sourceHandle: 'STRING_SOURCE',
     target: '16',
     targetHandle: 'q7Rq7c7jSz000hj3vt698',
   },
@@ -281,7 +413,102 @@ export const initialEdges: Edge[] = [
     id: '18-9',
     source: '18',
     target: '9',
-    sourceHandle: HandleId.VariableSource,
-    targetHandle: HandleId.RequestHeadersTarget,
+    sourceHandle: 'VARIABLE_SOURCE',
+    targetHandle: 'REQUEST_HEADERS_TARGET',
+  },
+  {
+    id: '13-16',
+    source: '13',
+    target: '16',
+    sourceHandle: 'STRING_SOURCE',
+    targetHandle: 'UrUJtY5hfTaRkvzffAXmh',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '3',
+    sourceHandle: 'START_SOURCE',
+    target: '21',
+    targetHandle: 'DELAY_TARGET',
+    id: 'xy-edge__3START_SOURCE-21DELAY_TARGET',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '3',
+    sourceHandle: 'START_SOURCE',
+    target: '20',
+    targetHandle: 'DELAY_TARGET',
+    id: 'xy-edge__3START_SOURCE-20DELAY_TARGET',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '3',
+    sourceHandle: 'START_SOURCE',
+    target: '19',
+    targetHandle: 'DELAY_TARGET',
+    id: 'xy-edge__3START_SOURCE-19DELAY_TARGET',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '21',
+    sourceHandle: 'DELAY_SOURCE',
+    target: '4',
+    targetHandle: 'REQUEST_TARGET',
+    id: 'xy-edge__21DELAY_SOURCE-4REQUEST_TARGET',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '20',
+    sourceHandle: 'DELAY_SOURCE',
+    target: '4',
+    targetHandle: 'REQUEST_TARGET',
+    id: 'xy-edge__20DELAY_SOURCE-4REQUEST_TARGET',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '19',
+    sourceHandle: 'DELAY_SOURCE',
+    target: '4',
+    targetHandle: 'REQUEST_TARGET',
+    id: 'xy-edge__19DELAY_SOURCE-4REQUEST_TARGET',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '16',
+    sourceHandle: 'RECORD_SOURCE',
+    target: '22',
+    targetHandle: 'DELAY_TARGET',
+    id: 'xy-edge__16RECORD_SOURCE-22DELAY_TARGET',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '22',
+    sourceHandle: 'DELAY_SOURCE',
+    target: '18',
+    targetHandle: 'VARIABLE_TARGET',
+    id: 'xy-edge__22DELAY_SOURCE-18VARIABLE_TARGET',
   },
 ];

@@ -9,7 +9,9 @@ import { ToggleRightIcon } from 'lucide-react';
 import { memo, useState } from 'react';
 import { cn } from '~/utils/classname';
 import { Switch } from '../switch';
+import { NodeId } from '../node-id';
 import { HandleId } from '~/types/handle-id';
+import { useNodeResult } from '~/lib/use-node-result';
 
 export type BooleanNodeType = Node<
   {
@@ -25,13 +27,18 @@ function _BooleanNode(props: NodeProps<BooleanNodeType>) {
   const [value, setValue] = useState(defaultValue);
   const { updateNodeData } = useReactFlow<BooleanNodeType>();
 
+  const result = useNodeResult(nodeId);
+
   return (
     <>
+      <NodeId nodeId={nodeId} />
       <div
         className={cn(
-          'flex items-stretch overflow-hidden rounded-full bg-zinc-900 text-white inset-ring-1 shadow-sm inset-ring-zinc-200/20 transition-shadow',
+          'flex items-stretch overflow-hidden rounded-full bg-zinc-900 text-white shadow-sm inset-ring-1 inset-ring-zinc-200/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-zinc-400'
+          selected && 'outline-1 outline-offset-1 outline-zinc-400',
+          result?.status === 'running' &&
+            'animate-running-node outline-2 outline-offset-1 outline-zinc-400'
         )}
       >
         <div className="flex h-[30px] shrink-0 items-center justify-center bg-zinc-800 p-2 pl-2.5">

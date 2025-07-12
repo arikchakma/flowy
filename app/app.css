@@ -1,1 +1,33 @@
 @import 'tailwindcss';
+
+@theme {
+  --animate-running-node: running-node 1s ease-in-out infinite;
+
+  @keyframes running-node {
+    0% {
+      outline-offset: 0;
+    }
+    50% {
+      outline-offset: 2px;
+    }
+    100% {
+      outline-offset: 0;
+    }
+  }
+}
+
+@utility hide-number-controls {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+@utility shadow-border {
+  box-shadow: 0 0 0 1px var(--tw-shadow-color, #00000014);
+}

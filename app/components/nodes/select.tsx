@@ -1,9 +1,11 @@
 import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react';
 import { LinkIcon } from 'lucide-react';
-import { type ChangeEvent, memo, useEffect, useState } from 'react';
+import { type ChangeEvent, memo, useState } from 'react';
 import { cn } from '~/utils/classname';
+import { NodeId } from '../node-id';
 import { HandleId } from '~/types/handle-id';
 import type { Node } from '@xyflow/react';
+import { useNodeResult } from '~/lib/use-node-result';
 
 export type SelectNodeType = Node<
   {
@@ -19,6 +21,8 @@ function _SelectNode(props: NodeProps<SelectNodeType>) {
   const [selectPath, setSelectPath] = useState(path);
   const { updateNodeData } = useReactFlow<SelectNodeType>();
 
+  const result = useNodeResult(nodeId);
+
   const handlePathChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectPath(e.target.value);
     updateNodeData(nodeId, { path: e.target.value });
@@ -26,11 +30,14 @@ function _SelectNode(props: NodeProps<SelectNodeType>) {
 
   return (
     <>
+      <NodeId nodeId={nodeId} />
       <div
         className={cn(
-          'flex items-stretch overflow-hidden rounded-full bg-zinc-900 text-white inset-ring-1 shadow-sm inset-ring-zinc-200/20 transition-shadow',
+          'flex items-stretch overflow-hidden rounded-full bg-zinc-900 text-white shadow-sm inset-ring-1 inset-ring-zinc-200/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-zinc-400'
+          selected && 'outline-1 outline-offset-1 outline-zinc-400',
+          result?.status === 'running' &&
+            'animate-running-node outline-2 outline-offset-1 outline-zinc-400'
         )}
       >
         <div className="flex h-[30px] shrink-0 items-center justify-center bg-zinc-800 p-2 pl-2.5">

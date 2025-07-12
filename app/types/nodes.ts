@@ -7,13 +7,13 @@ import type { RepeatNodeType } from '~/components/nodes/repeat';
 import type { RequestNodeType } from '~/components/nodes/request';
 import type { SelectNodeType } from '~/components/nodes/select';
 import type { StringNodeType } from '~/components/nodes/string';
-import type { TriggerNodeType } from '~/components/nodes/trigger';
+import type { StartNodeType } from '~/components/nodes/start';
 import type { VariableNodeType } from '~/components/nodes/variable';
 
 export type AppNode =
   | RequestNodeType
   | LogNodeType
-  | TriggerNodeType
+  | StartNodeType
   | SelectNodeType
   | RepeatNodeType
   | StringNodeType
@@ -22,3 +22,4 @@ export type AppNode =
   | DelayNodeType
   | RecordNodeType
   | VariableNodeType;
+export type NodeType = AppNode['type'];

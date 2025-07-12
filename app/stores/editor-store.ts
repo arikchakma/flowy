@@ -6,6 +6,7 @@ import {
   type OnNodesChange,
   type OnEdgesChange,
   type OnConnect,
+  type ReactFlowInstance,
 } from '@xyflow/react';
 import {
   initialEdges,
@@ -25,12 +26,15 @@ export type EditorState = {
   onConnect: OnConnect;
   setNodes: (nodes: AppNode[]) => void;
   setEdges: (edges: Edge[]) => void;
+  reactFlow: ReactFlowInstance<AppNode, Edge> | null;
+  setReactFlow: (reactFlow: ReactFlowInstance<AppNode, Edge>) => void;
 };
 
 export const useEditorStore = createWithEqualityFn<EditorState>(
   (set, get) => ({
     nodes: initialNodes,
     edges: initialEdges,
+    reactFlow: null,
     onNodesChange: (changes) => {
       set({
         nodes: applyNodeChanges(changes, get().nodes),
@@ -64,6 +68,9 @@ export const useEditorStore = createWithEqualityFn<EditorState>(
     },
     setEdges: (edges) => {
       set({ edges });
+    },
+    setReactFlow: (reactFlow) => {
+      set({ reactFlow });
     },
   }),
   shallow

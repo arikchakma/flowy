@@ -5,13 +5,21 @@ import {
   useNodeConnections,
   useReactFlow,
 } from '@xyflow/react';
-import { DatabaseIcon, HeadingIcon, Parentheses, WifiIcon } from 'lucide-react';
+import {
+  DatabaseIcon,
+  FileQuestionMarkIcon,
+  HeadingIcon,
+  Parentheses,
+  WifiIcon,
+} from 'lucide-react';
 import { memo, useRef, useState } from 'react';
 import { SelectNative } from '../select';
 import { flushSync } from 'react-dom';
 import { cn } from '~/utils/classname';
 import { HandleId } from '~/types/handle-id';
 import type { Node } from '@xyflow/react';
+import { NodeId } from '../node-id';
+import { useNodeResult } from '~/lib/use-node-result';
 
 export const allowedRequestMethods = ['GET', 'POST', 'PUT', 'DELETE'] as const;
 export type RequestMethod = (typeof allowedRequestMethods)[number];
@@ -34,25 +42,6 @@ export type RequestNodeType = Node<
      * @example `"https://arikko.dev/v1/v1-health"`
      */
     url: string;
-
-    /**
-     * The headers to send with the request. This values will be sent as is.
-     * They will be added via the Record node.
-     *
-     * @example `{ "Content-Type": "application/json" }`
-     * @default `{}`
-     */
-    headers?: Record<string, any>;
-
-    /**
-     * The body to send with the request. This values will be sent as is.
-     * They will be added via the Record node. This is only used for methods
-     * that support a body. Like `"POST"` and `"PUT"`.
-     *
-     * @example `{ "key": "value" }`
-     * @default `{}`
-     */
-    body?: Record<string, any>;
   },
   'request'
 >;
@@ -69,6 +58,8 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
   const urlInputRef = useRef<HTMLInputElement>(null);
   const [isUpdatingUrl, setIsUpdatingUrl] = useState(false);
 
+  const result = useNodeResult(nodeId);
+
   const isHeadersConnected =
     useNodeConnections({
       id: nodeId,
@@ -83,13 +74,23 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
       handleId: HandleId.RequestBodyTarget,
     }).length > 0;
 
+  const isQueryConnected =
+    useNodeConnections({
+      id: nodeId,
+      handleType: 'target',
+      handleId: HandleId.RequestQueryTarget,
+    }).length > 0;
+
   return (
     <>
+      <NodeId nodeId={nodeId} />
       <div
         className={cn(
           'max-w-52 min-w-52 rounded-xl bg-pink-200 p-1 inset-ring-1 inset-ring-pink-300/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-pink-300'
+          selected && 'outline-1 outline-offset-1 outline-pink-300',
+          result?.status === 'running' &&
+            'animate-running-node outline-2 outline-offset-1 outline-pink-300'
         )}
       >
         <div className="flex items-center justify-between px-1 py-2 pt-1.5">
@@ -179,6 +180,19 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
               position={Position.Left}
               className="-z-10! size-2.5! -translate-x-3! border-none! bg-pink-700!"
               isConnectable={!isHeadersConnected}
+            />
+          </div>
+
+          <div className="relative mt-2 flex items-center gap-1">
+            <FileQuestionMarkIcon className="size-2.5 stroke-[2.5]" />
+            <span className="leading-none text-gray-500">Query</span>
+
+            <Handle
+              id={HandleId.RequestQueryTarget}
+              type="target"
+              position={Position.Left}
+              className="-z-10! size-2.5! -translate-x-3! border-none! bg-pink-700!"
+              isConnectable={!isQueryConnected}
             />
           </div>
 

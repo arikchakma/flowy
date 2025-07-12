@@ -1,9 +1,17 @@
-import { Handle, type NodeProps, Position, useReactFlow } from '@xyflow/react';
+import {
+  Handle,
+  type Node,
+  type NodeProps,
+  Position,
+  useReactFlow,
+} from '@xyflow/react';
 import { ArrowUp10Icon, InfinityIcon } from 'lucide-react';
 import { memo, useRef, useState } from 'react';
 import { cn } from '~/utils/classname';
+import { NodeId } from '../node-id';
 import { HandleId } from '~/types/handle-id';
-import type { Node } from '@xyflow/react';
+
+import { useNodeResult } from '~/lib/use-node-result';
 
 export type LoopRepeatType = 'indefinite' | number;
 
@@ -30,13 +38,18 @@ function _RepeatNode(props: NodeProps<RepeatNodeType>) {
   const [repeatCount, setRepeatCount] = useState<LoopRepeatType>(repeat);
   const isIndefinite = repeatCount === 'indefinite';
 
+  const result = useNodeResult(nodeId);
+
   return (
     <>
+      <NodeId nodeId={nodeId} />
       <div
         className={cn(
-          'flex items-center gap-1.5 rounded-lg bg-zinc-900 p-0.5 text-white inset-ring-1 shadow-sm inset-ring-zinc-200/20 transition-shadow',
+          'flex items-center gap-1.5 rounded-lg bg-zinc-900 p-0.5 text-white shadow-sm inset-ring-1 inset-ring-zinc-200/20 transition-shadow',
           !selected && 'hover:shadow-md',
-          selected && 'outline-1 outline-offset-1 outline-zinc-400'
+          selected && 'outline-1 outline-offset-1 outline-zinc-400',
+          result?.status === 'running' &&
+            'animate-running-node outline-2 outline-offset-1 outline-zinc-400'
         )}
       >
         <button
