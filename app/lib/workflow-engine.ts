@@ -167,28 +167,36 @@ export class WorkflowEngine extends Subscribable<Listener> {
 
     // for a request node, header's source is the node id
     // is a dependency for the request node
+    let dependencies: string[] = [];
     switch (node.type) {
       case 'request':
-        const headersNodeId = this.#edges.find(
+        const edges = this.#edges.filter(
           (edge) =>
-            edge.targetHandle === HandleId.RequestHeadersTarget &&
-            edge.target === node.id
-        )?.source;
+            edge.target === node.id &&
+            (edge.targetHandle === HandleId.RequestHeadersTarget ||
+              edge.targetHandle === HandleId.RequestQueryTarget ||
+              edge.targetHandle === HandleId.RequestBodyTarget)
+        );
 
-        if (!headersNodeId) {
+        if (edges.length === 0) {
           return [];
         }
 
-        const result = this.#results.get(headersNodeId);
-        if (result?.status === 'success' || result?.status === 'error') {
-          return [];
+        for (const edge of edges) {
+          const source = this.#nodes.find((node) => node.id === edge.source);
+          if (!source) {
+            continue;
+          }
+
+          const result = this.#results.get(source.id);
+          if (result?.status === 'success' || result?.status === 'error') {
+            continue;
+          }
+
+          dependencies.push(source.id);
         }
-
-        return [headersNodeId];
-
+        return dependencies;
       case 'record':
-        const dependencies: string[] = [];
-
         for (const value of node.data.values) {
           const source = this.#edges.find(
             (edge) => edge.targetHandle === value.handleId
@@ -211,9 +219,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
 
           dependencies.push(sourceNode.id);
         }
-
         return dependencies;
-
       default:
         return [];
     }
@@ -324,11 +330,14 @@ export class WorkflowEngine extends Subscribable<Listener> {
       status: 'running',
     });
 
+    const prev = options?.prev;
+    const prevResult = prev ? this.#results.get(prev) : undefined;
     await this.#sleep(node.data.duration);
 
     this.#setResult(nodeId, {
       status: 'success',
-      data: null,
+      data:
+        prevResult?.status === 'success' ? prevResult?.data : prevResult?.error,
     });
   }
 
@@ -385,9 +394,21 @@ export class WorkflowEngine extends Subscribable<Listener> {
 
     try {
       const headers = this.#headers(nodeId);
-      console.log(`HEADERS[${nodeId}]:`, headers);
-      const result = await fetch(node.data.url, {
-        method: node.data.method,
+      const query = this.#query(nodeId);
+      const body = this.#body(nodeId);
+      const result = await fetch('/v1/workflow/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Flowy-Workflow-Node-Id': nodeId,
+        },
+        body: JSON.stringify({
+          url: node.data.url,
+          method: node.data.method,
+          headers,
+          body,
+          query,
+        }),
       }).then((r) => r.json());
 
       this.#setResult(nodeId, {
@@ -446,7 +467,25 @@ export class WorkflowEngine extends Subscribable<Listener> {
         edge.targetHandle === HandleId.RequestHeadersTarget &&
         edge.target === nodeId
     )?.source;
-    return headersNodeId ? this.#results.get(headersNodeId)?.data : undefined;
+    return headersNodeId ? this.#results.get(headersNodeId)?.data : {};
+  }
+
+  #query(nodeId: string) {
+    const queryNodeId = this.#edges.find(
+      (edge) =>
+        edge.targetHandle === HandleId.RequestQueryTarget &&
+        edge.target === nodeId
+    )?.source;
+    return queryNodeId ? this.#results.get(queryNodeId)?.data : {};
+  }
+
+  #body(nodeId: string) {
+    const bodyNodeId = this.#edges.find(
+      (edge) =>
+        edge.targetHandle === HandleId.RequestBodyTarget &&
+        edge.target === nodeId
+    )?.source;
+    return bodyNodeId ? this.#results.get(bodyNodeId)?.data : {};
   }
 
   #setResult(nodeId: string, result: Partial<StepResult>) {

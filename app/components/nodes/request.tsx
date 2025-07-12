@@ -5,7 +5,13 @@ import {
   useNodeConnections,
   useReactFlow,
 } from '@xyflow/react';
-import { DatabaseIcon, HeadingIcon, Parentheses, WifiIcon } from 'lucide-react';
+import {
+  DatabaseIcon,
+  FileQuestionMarkIcon,
+  HeadingIcon,
+  Parentheses,
+  WifiIcon,
+} from 'lucide-react';
 import { memo, useRef, useState } from 'react';
 import { SelectNative } from '../select';
 import { flushSync } from 'react-dom';
@@ -36,25 +42,6 @@ export type RequestNodeType = Node<
      * @example `"https://arikko.dev/v1/v1-health"`
      */
     url: string;
-
-    /**
-     * The headers to send with the request. This values will be sent as is.
-     * They will be added via the Record node.
-     *
-     * @example `{ "Content-Type": "application/json" }`
-     * @default `{}`
-     */
-    headers?: Record<string, any>;
-
-    /**
-     * The body to send with the request. This values will be sent as is.
-     * They will be added via the Record node. This is only used for methods
-     * that support a body. Like `"POST"` and `"PUT"`.
-     *
-     * @example `{ "key": "value" }`
-     * @default `{}`
-     */
-    body?: Record<string, any>;
   },
   'request'
 >;
@@ -85,6 +72,13 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
       id: nodeId,
       handleType: 'target',
       handleId: HandleId.RequestBodyTarget,
+    }).length > 0;
+
+  const isQueryConnected =
+    useNodeConnections({
+      id: nodeId,
+      handleType: 'target',
+      handleId: HandleId.RequestQueryTarget,
     }).length > 0;
 
   return (
@@ -186,6 +180,19 @@ function _RequestNode(props: NodeProps<RequestNodeType>) {
               position={Position.Left}
               className="-z-10! size-2.5! -translate-x-3! border-none! bg-pink-700!"
               isConnectable={!isHeadersConnected}
+            />
+          </div>
+
+          <div className="relative mt-2 flex items-center gap-1">
+            <FileQuestionMarkIcon className="size-2.5 stroke-[2.5]" />
+            <span className="leading-none text-gray-500">Query</span>
+
+            <Handle
+              id={HandleId.RequestQueryTarget}
+              type="target"
+              position={Position.Left}
+              className="-z-10! size-2.5! -translate-x-3! border-none! bg-pink-700!"
+              isConnectable={!isQueryConnected}
             />
           </div>
 

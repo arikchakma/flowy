@@ -11,8 +11,8 @@ export const initialNodes: AppNode[] = [
     id: '3',
     type: 'start',
     position: {
-      x: -251.17179630629016,
-      y: 99.53789184538306,
+      x: -186.17179630629016,
+      y: 154.53789184538306,
     },
     data: {
       label: '3',
@@ -33,11 +33,11 @@ export const initialNodes: AppNode[] = [
     },
     data: {
       method: 'GET',
-      url: 'https://jsonplaceholder.typicode.com/todos/1',
+      url: 'https://arikko.dev/api/v1-health.json',
     },
     measured: {
       width: 208,
-      height: 170,
+      height: 190,
     },
   },
   {
@@ -45,7 +45,7 @@ export const initialNodes: AppNode[] = [
     type: 'log',
     position: {
       x: 467.93950326627834,
-      y: 198.72277354470052,
+      y: 203.72277354470052,
     },
     data: {
       label: '5',
@@ -54,13 +54,15 @@ export const initialNodes: AppNode[] = [
       width: 64,
       height: 30,
     },
+    selected: false,
+    dragging: false,
   },
   {
     id: '6',
     type: 'log',
     position: {
       x: 493.12839178319683,
-      y: 236.2100694822811,
+      y: 241.2100694822811,
     },
     data: {
       label: '5',
@@ -69,28 +71,32 @@ export const initialNodes: AppNode[] = [
       width: 64,
       height: 30,
     },
+    selected: false,
+    dragging: false,
   },
   {
     id: '7',
     type: 'select',
     position: {
       x: 444.28632788917616,
-      y: 163.57104506926493,
+      y: 168.57104506926493,
     },
     data: {
-      path: 'data.title',
+      path: 'data.body.title',
     },
     measured: {
       width: 152,
       height: 30,
     },
+    selected: false,
+    dragging: false,
   },
   {
     id: '8',
     type: 'log',
     position: {
       x: 658.0002688961907,
-      y: 162.86113127964492,
+      y: 167.86113127964492,
     },
     data: {
       label: '5',
@@ -99,6 +105,8 @@ export const initialNodes: AppNode[] = [
       width: 64,
       height: 30,
     },
+    selected: false,
+    dragging: false,
   },
   {
     id: '9',
@@ -109,12 +117,13 @@ export const initialNodes: AppNode[] = [
     },
     data: {
       method: 'GET',
-      url: 'https://jsonplaceholder.typicode.com/todos/1',
+      url: 'https://arikko.dev/api/v1-health.json',
     },
     measured: {
       width: 208,
-      height: 170,
+      height: 190,
     },
+    selected: false,
   },
   {
     id: '10',
@@ -138,7 +147,7 @@ export const initialNodes: AppNode[] = [
     type: 'delay',
     position: {
       x: 444.5094158058936,
-      y: 128.4544266353185,
+      y: 133.4544266353185,
     },
     data: {
       duration: 1000,
@@ -147,6 +156,8 @@ export const initialNodes: AppNode[] = [
       width: 111,
       height: 30,
     },
+    selected: false,
+    dragging: false,
   },
   {
     id: '12',
@@ -247,8 +258,8 @@ export const initialNodes: AppNode[] = [
     id: '19',
     type: 'delay',
     position: {
-      x: -32.78404724773202,
-      y: 199.9544266353185,
+      x: -22.78404724773202,
+      y: 219.9544266353185,
     },
     data: {
       duration: 2000,
@@ -264,8 +275,8 @@ export const initialNodes: AppNode[] = [
     id: '20',
     type: 'delay',
     position: {
-      x: -32.78404724773202,
-      y: 166.9544266353185,
+      x: -22.78404724773202,
+      y: 186.9544266353185,
     },
     data: {
       duration: 3000,
@@ -281,8 +292,8 @@ export const initialNodes: AppNode[] = [
     id: '21',
     type: 'delay',
     position: {
-      x: -32.78404724773202,
-      y: 133.9544266353185,
+      x: -22.78404724773202,
+      y: 153.9544266353185,
     },
     data: {
       duration: 4000,

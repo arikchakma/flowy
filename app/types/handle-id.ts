@@ -7,6 +7,7 @@ export enum HandleId {
   RequestTarget = 'REQUEST_TARGET',
   RequestHeadersTarget = 'REQUEST_HEADERS_TARGET',
   RequestBodyTarget = 'REQUEST_BODY_TARGET',
+  RequestQueryTarget = 'REQUEST_QUERY_TARGET',
 
   SelectSource = 'SELECT_SOURCE',
   SelectTarget = 'SELECT_TARGET',
