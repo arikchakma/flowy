@@ -18,7 +18,7 @@ export const initialNodes: AppNode[] = [
       label: '3',
     },
     measured: {
-      width: 93,
+      width: 79,
       height: 30,
     },
     selected: false,
@@ -152,7 +152,7 @@ export const initialNodes: AppNode[] = [
     id: '12',
     type: 'string',
     position: {
-      x: -47.28404724773202,
+      x: -147.28404724773202,
       y: -184.57495077711977,
     },
     data: {
@@ -162,12 +162,14 @@ export const initialNodes: AppNode[] = [
       width: 152,
       height: 30,
     },
+    selected: false,
+    dragging: false,
   },
   {
     id: '13',
     type: 'string',
     position: {
-      x: -47.28404724773202,
+      x: -147.28404724773202,
       y: -150.57495077711977,
     },
     data: {
@@ -177,6 +179,8 @@ export const initialNodes: AppNode[] = [
       width: 152,
       height: 30,
     },
+    selected: false,
+    dragging: false,
   },
   {
     id: '18',
@@ -197,7 +201,7 @@ export const initialNodes: AppNode[] = [
     id: '16',
     type: 'record',
     position: {
-      x: 157.97502695662723,
+      x: 57.97502695662723,
       y: -220.71196623325315,
     },
     data: {
@@ -236,6 +240,8 @@ export const initialNodes: AppNode[] = [
       width: 208,
       height: 276,
     },
+    selected: false,
+    dragging: false,
   },
   {
     id: '19',
@@ -292,11 +298,11 @@ export const initialNodes: AppNode[] = [
     id: '22',
     type: 'delay',
     position: {
-      x: -32.78404724773202,
-      y: 100.9544266353185,
+      x: 299.3513673739703,
+      y: 20.247755669789846,
     },
     data: {
-      duration: 5000,
+      duration: 10000,
     },
     measured: {
       width: 111,
@@ -382,17 +388,6 @@ export const initialEdges: Edge[] = [
     },
   },
   {
-    id: '16-18',
-    style: {
-      stroke: 'var(--color-zinc-900)',
-      strokeWidth: 2.5,
-    },
-    source: '16',
-    sourceHandle: 'RECORD_SOURCE',
-    target: '18',
-    targetHandle: 'VARIABLE_TARGET',
-  },
-  {
     id: '12-16',
     style: {
       stroke: 'var(--color-zinc-900)',
@@ -416,17 +411,6 @@ export const initialEdges: Edge[] = [
     target: '16',
     sourceHandle: 'STRING_SOURCE',
     targetHandle: 'UrUJtY5hfTaRkvzffAXmh',
-  },
-  {
-    style: {
-      stroke: 'var(--color-zinc-900)',
-      strokeWidth: 2.5,
-    },
-    source: '3',
-    sourceHandle: 'START_SOURCE',
-    target: '22',
-    targetHandle: 'DELAY_TARGET',
-    id: 'xy-edge__3START_SOURCE-22DELAY_TARGET',
   },
   {
     style: {
@@ -466,17 +450,6 @@ export const initialEdges: Edge[] = [
       stroke: 'var(--color-zinc-900)',
       strokeWidth: 2.5,
     },
-    source: '22',
-    sourceHandle: 'DELAY_SOURCE',
-    target: '4',
-    targetHandle: 'REQUEST_TARGET',
-    id: 'xy-edge__22DELAY_SOURCE-4REQUEST_TARGET',
-  },
-  {
-    style: {
-      stroke: 'var(--color-zinc-900)',
-      strokeWidth: 2.5,
-    },
     source: '21',
     sourceHandle: 'DELAY_SOURCE',
     target: '4',
@@ -504,5 +477,27 @@ export const initialEdges: Edge[] = [
     target: '4',
     targetHandle: 'REQUEST_TARGET',
     id: 'xy-edge__19DELAY_SOURCE-4REQUEST_TARGET',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '16',
+    sourceHandle: 'RECORD_SOURCE',
+    target: '22',
+    targetHandle: 'DELAY_TARGET',
+    id: 'xy-edge__16RECORD_SOURCE-22DELAY_TARGET',
+  },
+  {
+    style: {
+      stroke: 'var(--color-zinc-900)',
+      strokeWidth: 2.5,
+    },
+    source: '22',
+    sourceHandle: 'DELAY_SOURCE',
+    target: '18',
+    targetHandle: 'VARIABLE_TARGET',
+    id: 'xy-edge__22DELAY_SOURCE-18VARIABLE_TARGET',
   },
 ];

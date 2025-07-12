@@ -183,6 +183,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
         if (result?.status === 'success' || result?.status === 'error') {
           return [];
         }
+
         return [headersNodeId];
 
       case 'record':
@@ -222,34 +223,68 @@ export class WorkflowEngine extends Subscribable<Listener> {
     // for the request node, there can be either
     // success or error children so we need to check
     // the result of the request node
+    let children: string[] = [];
+    const currentNodeId = node.id;
     switch (node.type) {
       case 'request':
-        const result = this.#results.get(node.id);
+        const result = this.#results.get(currentNodeId);
         if (!result) {
           return [];
         }
 
         const success = this.#edges.filter(
           (edge) =>
-            edge.source === node.id &&
+            edge.source === currentNodeId &&
             edge.sourceHandle === HandleId.RequestSuccessSource
         );
         const error = this.#edges.filter(
           (edge) =>
-            edge.source === node.id &&
+            edge.source === currentNodeId &&
             edge.sourceHandle === HandleId.RequestFailureSource
         );
 
-        let children: string[] = [];
         if (result.data) {
           children = success.map((edge) => edge.target);
         } else if (result.error) {
           children = error.map((edge) => edge.target);
         }
-        return children;
+        break;
+      case 'record':
+      case 'variable':
+        const original = this.#graph.get(currentNodeId) || [];
+        for (const child of original) {
+          // we will run if the children has never been visited
+          // and has no other parents that has not been visited
+          const visitedCount = this.#visitedCount.get(child) || 0;
+          const parents = this.#edges.filter(
+            (edge) =>
+              edge.target === child &&
+              edge.source !== currentNodeId &&
+              !this.#visitedCount.get(edge.source)
+          );
+
+          if (visitedCount !== 0 || parents.length !== 0) {
+            continue;
+          }
+
+          children.push(child);
+        }
+        break;
       default:
-        return this.#graph.get(node.id);
+        children = this.#graph.get(currentNodeId) || [];
+        break;
     }
+
+    return children;
+  }
+
+  #type(nodeId: string) {
+    const node = this.#nodes.find((node) => node.id === nodeId);
+    if (!node) {
+      return undefined;
+    }
+
+    return node.type;
   }
 
   #sleep(ms: number) {
