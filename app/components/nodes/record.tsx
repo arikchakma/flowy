@@ -1,4 +1,10 @@
-import { Handle, type Node, type NodeProps, Position } from '@xyflow/react';
+import {
+  Handle,
+  type Node,
+  type NodeProps,
+  Position,
+  useReactFlow,
+} from '@xyflow/react';
 import { PlusIcon, WifiIcon, XIcon } from 'lucide-react';
 import { memo, useState } from 'react';
 import { nanoid } from 'nanoid';
@@ -30,6 +36,7 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
   const { values: initialValues = [] } = data;
   const [values, setValues] =
     useState<RecordNodeType['data']['values']>(initialValues);
+  const { updateNodeData } = useReactFlow<RecordNodeType>();
 
   const result = useNodeResult(nodeId);
   const hasValues = values.length > 0;
@@ -78,13 +85,13 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
                         spellCheck={false}
                         onBlur={(e) => {
                           const newKey = e.currentTarget.textContent || '';
-                          setValues((values) =>
-                            values.map((value) =>
-                              value.handleId === handleId
-                                ? { ...value, key: newKey }
-                                : value
-                            )
+                          const newValues = values.map((value) =>
+                            value.handleId === handleId
+                              ? { ...value, key: newKey }
+                              : value
                           );
+                          setValues(newValues);
+                          updateNodeData(nodeId, { values: newValues });
                         }}
                         data-handle-id={handleId}
                       ></div>
@@ -93,9 +100,11 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
                         <button
                           className="flex size-4 cursor-pointer items-center justify-center rounded-md text-violet-300 hover:bg-violet-100 hover:text-violet-700"
                           onClick={() => {
-                            setValues((values) =>
-                              values.filter((_, i) => i !== index)
+                            const newValues = values.filter(
+                              (_, i) => i !== index
                             );
+                            setValues(newValues);
+                            updateNodeData(nodeId, { values: newValues });
                           }}
                         >
                           <XIcon className="size-2.5 stroke-[2.5]" />
@@ -126,15 +135,15 @@ function _RecordNode(props: NodeProps<RecordNodeType>) {
               className="flex size-4 cursor-pointer items-center justify-center rounded-md text-violet-600 hover:bg-violet-200 hover:text-violet-700"
               onClick={() => {
                 const handleId = nanoid(4);
-                flushSync(() =>
-                  setValues((values) => [
-                    ...values,
-                    {
-                      key: '',
-                      handleId,
-                    },
-                  ])
-                );
+                const newValues = [
+                  ...values,
+                  {
+                    key: '',
+                    handleId,
+                  },
+                ];
+                updateNodeData(nodeId, { values: newValues });
+                flushSync(() => setValues(newValues));
 
                 const handle = document.querySelector(
                   `[data-handle-id="${handleId}"]`

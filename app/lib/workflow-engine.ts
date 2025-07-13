@@ -201,6 +201,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
 
           dependencies.push(source.id);
         }
+
         return dependencies;
       case 'record':
         for (const value of node.data.values) {
@@ -272,7 +273,8 @@ export class WorkflowEngine extends Subscribable<Listener> {
             (edge) =>
               edge.target === child &&
               edge.source !== currentNodeId &&
-              !this.#visitedCount.get(edge.source)
+              (this.#results.get(edge.source)?.status === 'success' ||
+                this.#results.get(edge.source)?.status === 'error')
           );
 
           if (visitedCount !== 0 || parents.length !== 0) {
