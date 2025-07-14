@@ -269,13 +269,17 @@ export class WorkflowEngine extends Subscribable<Listener> {
           // we will run if the children has never been visited
           // and has no other parents that has not been visited
           const visitedCount = this.#visitedCount.get(child) || 0;
-          const parents = this.#edges.filter(
-            (edge) =>
+          const parents = this.#edges.filter((edge) => {
+            const result = this.#results.get(edge.source);
+            const hasProcessed =
+              (result.status === 'success' || result.status === 'error');
+
+            return (
               edge.target === child &&
               edge.source !== currentNodeId &&
-              (this.#results.get(edge.source)?.status === 'success' ||
-                this.#results.get(edge.source)?.status === 'error')
-          );
+              !hasProcessed
+            );
+          });
 
           if (visitedCount !== 0 || parents.length !== 0) {
             continue;
