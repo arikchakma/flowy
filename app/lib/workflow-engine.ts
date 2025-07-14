@@ -272,6 +272,7 @@ export class WorkflowEngine extends Subscribable<Listener> {
           const parents = this.#edges.filter((edge) => {
             const result = this.#results.get(edge.source);
             const hasProcessed =
+              result &&
               (result.status === 'success' || result.status === 'error');
 
             return (
